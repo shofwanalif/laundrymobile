@@ -1,0 +1,15 @@
+import 'package:flutter/material.dart';
+
+class LaundryPackage {
+  final int id;
+  final String name;
+  final String description;
+  final double price;
+
+  LaundryPackage({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+  });
+}
