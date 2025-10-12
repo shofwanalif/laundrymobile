@@ -15,12 +15,12 @@ class _PackageCardState extends State<PackageCard> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isVIP = _isSelected;
-    final Color backgroundColor = isVIP
-        ? const Color(0xFF1D4ED8) // biru tua seperti VIP card
-        : const Color(0xFFF6F8FF); // abu lembut seperti card lain
-    final Color accentColor = isVIP ? Colors.white : const Color(0xFF3B82F6);
-    final Color textColor = isVIP ? Colors.white : Colors.black87;
+    final bool clicked = _isSelected;
+    final Color backgroundColor = clicked
+        ? const Color(0xFF1D4ED8) // biru tua saat di klik
+        : const Color(0xFFF6F8FF); // abu abu saat normal
+    final Color accentColor = clicked ? Colors.white : const Color(0xFF3B82F6);
+    final Color textColor = clicked ? Colors.white : Colors.black87;
 
     return GestureDetector(
       onTap: () => setState(() => _isSelected = !_isSelected),
