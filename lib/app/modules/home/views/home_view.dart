@@ -65,6 +65,7 @@ class HomePage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    Get.toNamed('/diodemo');
                     // Navigate to service list using Dio
                     // Get.toNamed('/service-dio');
                   },
