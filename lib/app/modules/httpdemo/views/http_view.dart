@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import '../controllers/http_controller.dart';
 import '../../../theme/app_colors.dart';
 
-class ServicesPage extends StatelessWidget {
-  const ServicesPage({super.key});
+class HTTPServicesPage extends StatelessWidget {
+  const HTTPServicesPage({super.key});
 
   @override
   Widget build(BuildContext context) {

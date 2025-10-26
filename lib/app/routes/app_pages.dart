@@ -4,6 +4,8 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/httpdemo/bindings/http_binding.dart';
 import '../modules/httpdemo/views/http_view.dart';
+import '../modules/diodemo/bindings/dio_binding.dart';
+import '../modules/diodemo/views/dio_view.dart';
 
 part 'app_routes.dart';
 
@@ -21,8 +23,14 @@ class AppPages {
 
     GetPage(
       name: _Paths.HTTPDEMO,
-      page: () => const ServicesPage(),
+      page: () => const HTTPServicesPage(),
       binding: HttpBinding(),
+    ),
+
+    GetPage(
+      name: _Paths.DIODEMO,
+      page: () => const DIOServicesPage(),
+      binding: DioBinding(),
     ),
   ];
 }
