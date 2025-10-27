@@ -8,8 +8,12 @@ class HttpService {
   Future<List<LaundryService>> getAllServices() async {
     try {
       final url = Uri.parse(baseUrl);
+      final stopwatch = Stopwatch()..start();
 
       final response = await http.get(url);
+      stopwatch.stop();
+      final elapsed = stopwatch.elapsedMilliseconds; // Waktu dalam milidetik
+      print('⏱️ Response time: $elapsed ms');
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body);
