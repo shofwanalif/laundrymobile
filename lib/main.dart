@@ -6,6 +6,7 @@ import 'package:laundrymobile/app/data/services/supabase_service.dart';
 import 'app/routes/app_pages.dart';
 //import 'app/modules/auth/bindings/auth_binding.dart';
 import 'app/modules/auth/controllers/auth_controller.dart';
+import 'app/data/providers/services_provider.dart';
 
 // Future<void> main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +48,7 @@ Future<void> main() async {
   try {
     await Get.putAsync(() => SupabaseService().init());
     Get.put(AuthProvider());
+    Get.put(ServicesProvider());
     Get.put(AuthController());
 
     runApp(const MyApp());
