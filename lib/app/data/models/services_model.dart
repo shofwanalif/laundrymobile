@@ -1,9 +1,25 @@
+import 'package:hive/hive.dart';
+
+part 'services_model.g.dart';
+
+@HiveType(typeId: 0)
 class ServicesModel {
+  @HiveField(0)
   final int? id;
+  
+  @HiveField(1)
   final String serviceName;
+  
+  @HiveField(2)
   final String description;
+  
+  @HiveField(3)
   final int price;
+  
+  @HiveField(4)
   final DateTime? createdAt;
+  
+  @HiveField(5)
   final DateTime? updatedAt;
 
   ServicesModel({
