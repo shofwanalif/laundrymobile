@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/http_controller.dart';
-import '../../../theme/app_colors.dart';
+import '../../../core/theme/app_colors.dart';
 
 class HTTPServicesPage extends StatelessWidget {
   const HTTPServicesPage({super.key});

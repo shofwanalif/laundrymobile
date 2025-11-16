@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:laundrymobile/app/theme/app_colors.dart';
+import 'package:laundrymobile/app/core/theme/app_colors.dart';
+import 'package:laundrymobile/app/modules/home/controllers/home_controller.dart';
+import '../../auth/controllers/auth_controller.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
 
   @override
@@ -42,7 +44,7 @@ class HomePage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => Get.toNamed('/httpdemo'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColors.orangePrimary,
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -60,7 +62,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -70,7 +72,7 @@ class HomePage extends StatelessWidget {
                     // Get.toNamed('/service-dio');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColors.orangePrimary,
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -79,6 +81,32 @@ class HomePage extends StatelessWidget {
                   ),
                   child: Text(
                     'Lihat Service (dio)',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.white,
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.find<AuthController>().logout();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.error,
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    'Logout',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 14,

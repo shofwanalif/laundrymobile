@@ -1,9 +1,8 @@
 import 'package:get/get.dart';
+import '../../../data/providers/auth_provider.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
+  final AuthProvider _authProvider = Get.find<AuthProvider>();
 
-  final count = 0.obs;
-
-  void increment() => count.value++;
+  String? get userEmail => _authProvider.currentUser?.email;
 }

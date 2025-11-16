@@ -10,7 +10,7 @@ class MenuService extends GetxService {
       LogInterceptor(
         requestBody: true,
         responseBody: true,
-        logPrint: (obj) => print('[DIO] $obj'),
+        logPrint: (obj) => print('DIO LOG: $obj'),
       ),
     );
   }
