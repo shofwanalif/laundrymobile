@@ -42,8 +42,8 @@ class HomePage extends GetView<HomeController> {
         ),
       ),
       backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? AppColors.darkSurface
-          : AppColors.surface,
+          ? AppColors.primaryDark
+          : AppColors.primaryLight,
       elevation: 0.5,
       actions: [
         IconButton(
@@ -55,26 +55,37 @@ class HomePage extends GetView<HomeController> {
           ),
           onPressed: () => themeService.toggleTheme(),
         ),
-        Obx(() => IconButton(
-              icon: controller.isLoading.value
-                  ? SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.textPrimary,
-                      ),
-                    )
-                  : Icon(
-                      Icons.refresh,
+        Obx(
+          () => IconButton(
+            icon: controller.isLoading.value
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
                       color: Theme.of(context).brightness == Brightness.dark
                           ? AppColors.darkTextPrimary
                           : AppColors.textPrimary,
                     ),
-              onPressed: controller.isLoading.value ? null : controller.refreshData,
-            )),
+                  )
+                : Icon(
+                    Icons.refresh,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.textPrimary,
+                  ),
+            onPressed: controller.isLoading.value
+                ? null
+                : controller.refreshData,
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.directions, color: Colors.greenAccent),
+          tooltip: 'Ayo rute kami!',
+          onPressed: () {
+            controller.goToLocation();
+          },
+        ),
       ],
     );
   }
@@ -94,23 +105,15 @@ class HomePage extends GetView<HomeController> {
             ),
             accountEmail: Text(
               controller.userEmail ?? 'user@example.com',
-              style: TextStyle(
-                color: AppColors.white.withOpacity(0.8),
-              ),
+              style: TextStyle(color: AppColors.white.withOpacity(0.8)),
             ),
             currentAccountPicture: CircleAvatar(
               backgroundColor: AppColors.white,
-              child: Icon(
-                Icons.person,
-                color: AppColors.primary,
-                size: 40,
-              ),
+              child: Icon(Icons.person, color: AppColors.primary, size: 40),
             ),
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-            ),
+            decoration: BoxDecoration(gradient: AppColors.primaryGradient),
           ),
-          
+
           // Menu Items
           ListTile(
             leading: Icon(Icons.home, color: AppColors.primary),
@@ -119,7 +122,7 @@ class HomePage extends GetView<HomeController> {
               Get.back();
             },
           ),
-          
+
           ListTile(
             leading: Icon(Icons.settings, color: AppColors.primary),
             title: const Text('Pengaturan'),
@@ -128,16 +131,13 @@ class HomePage extends GetView<HomeController> {
               // Navigate to settings if needed
             },
           ),
-          
+
           const Divider(),
-          
+
           // Logout Button
           ListTile(
             leading: Icon(Icons.logout, color: AppColors.error),
-            title: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
-            ),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
             onTap: () {
               Get.back();
               controller.logout();
@@ -155,14 +155,10 @@ class HomePage extends GetView<HomeController> {
           children: [
             // Offline Mode Indicator - Always check this condition
             if (controller.isOfflineMode.value)
-              OfflineIndicator(
-                onRetry: controller.refreshData,
-              ),
-            
+              OfflineIndicator(onRetry: controller.refreshData),
+
             // Main Content
-            Expanded(
-              child: _buildContent(context),
-            ),
+            Expanded(child: _buildContent(context)),
           ],
         );
       },
@@ -187,9 +183,7 @@ class HomePage extends GetView<HomeController> {
           return _buildEmptyWidget(context);
         }
 
-        return ServiceList(
-          onServiceTap: _onServiceTap,
-        );
+        return ServiceList(onServiceTap: _onServiceTap);
       },
     );
   }
@@ -214,11 +208,7 @@ class HomePage extends GetView<HomeController> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: AppColors.error,
-            ),
+            Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: 16),
             Text(
               'Gagal Memuat Data',
@@ -253,7 +243,10 @@ class HomePage extends GetView<HomeController> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: AppColors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                   ),
                   child: const Text('Coba Lagi'),
                 ),
@@ -261,7 +254,10 @@ class HomePage extends GetView<HomeController> {
                 OutlinedButton(
                   onPressed: () => Get.back(),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                   ),
                   child: const Text('Kembali'),
                 ),

@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color orangePrimary = Color(0xFFFF7D03);
+  // Base Orange Colors
+  static const Color orangePrimary = Color.fromARGB(255, 253, 127, 8);
+  static const Color orangeLight = Color.fromARGB(255, 223, 120, 10);
+  static const Color orangeDark = Color.fromARGB(255, 182, 92, 2);
+
   static const Color text = Color(0xFF1B1B1B);
   static const Color white = Colors.white;
 
-  // Primary Colors - iOS Blue
-  static const Color primary = Color(0xFF007AFF);
-  static const Color primaryLight = Color(0xFF5AC8FA);
-  static const Color primaryDark = Color(0xFF0051D5);
+  // Primary Colors - Orange Theme
+  static const Color primary = orangePrimary;
+  static const Color primaryLight = orangeLight;
+  static const Color primaryDark = orangeDark;
 
-  // Secondary Colors
-  static const Color secondary = Color(0xFF5856D6);
-  static const Color accent = Color(0xFFFF9500);
+  // Secondary Colors - Complementary Orange/Accent
+  static const Color secondary = Color(0xFFFF9500); // lebih soft orange
+  static const Color accent = Color(0xFFFFC107); // gold-ish accent
 
   // Status Colors
-  static const Color success = Color(0xFF34C759);
-  static const Color error = Color(0xFFFF3B30);
-  static const Color warning = Color(0xFFFF9500);
-  static const Color info = Color(0xFF007AFF);
+  static const Color success = Color(
+    0xFF34C759,
+  ); // tetap hijau untuk status sukses
+  static const Color error = Color(0xFFFF3B30); // tetap merah
+  static const Color warning = Color(0xFFFF9500); // orange untuk warning
+  static const Color info = orangePrimary; // info juga pakai orange
 
-  // Neutral Colors - iOS Style
-  static const Color background = Color(0xFFF2F2F7);
+  // Neutral Colors
+  static const Color background = Color(0xFFFDF6F0);
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceVariant = Color(0xFFF2F2F7);
-  static const Color inputFillColor = Color(0xFFF9F9F9);
+  static const Color surfaceVariant = Color(0xFFFFF2EC);
+  static const Color inputFillColor = Color(0xFFFFFAF5);
 
   // Text Colors
   static const Color textPrimary = Color(0xFF000000);
@@ -32,22 +38,22 @@ class AppColors {
   static const Color textTertiary = Color(0xFFC7C7CC);
 
   // Separator
-  static const Color separator = Color(0xFFC6C6C8);
-  static const Color separatorLight = Color(0xFFE5E5EA);
+  static const Color separator = Color(0xFFE5D8CC);
+  static const Color separatorLight = Color(0xFFFFEDE3);
 
   // Card & Container
   static const Color cardBackground = Color(0xFFFFFFFF);
-  static const Color cardBorder = Color(0xFFE5E5EA);
+  static const Color cardBorder = Color(0xFFFFE5D1);
 
   // Gradient Colors
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFF007AFF), Color(0xFF5AC8FA)],
+    colors: [orangePrimary, orangeLight],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient secondaryGradient = LinearGradient(
-    colors: [Color(0xFF5856D6), Color(0xFFAF52DE)],
+    colors: [secondary, accent],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -56,20 +62,20 @@ class AppColors {
   static const Color shadowColor = Color(0x1A000000);
 
   // Dark Theme Colors
-  static const Color darkBackground = Color(0xFF000000);
-  static const Color darkSurface = Color(0xFF1C1C1E);
-  static const Color darkSurfaceVariant = Color(0xFF2C2C2E);
+  static const Color darkBackground = Color(0xFF1C0F00);
+  static const Color darkSurface = Color(0xFF2A1A0D);
+  static const Color darkSurfaceVariant = Color(0xFF3A2414);
 
   // Dark Theme Text Colors
   static const Color darkTextPrimary = Color(0xFFFFFFFF);
-  static const Color darkTextSecondary = Color(0xFF8E8E93);
-  static const Color darkTextTertiary = Color(0xFF636366);
+  static const Color darkTextSecondary = Color(0xFFBFBFBF);
+  static const Color darkTextTertiary = Color(0xFF8C8C8C);
 
   // Dark Theme Separator
-  static const Color darkSeparator = Color(0xFF38383A);
-  static const Color darkSeparatorLight = Color(0xFF2C2C2E);
+  static const Color darkSeparator = Color(0xFF5A3E2A);
+  static const Color darkSeparatorLight = Color(0xFF4A2E1A);
 
   // Dark Theme Card & Container
-  static const Color darkCardBackground = Color(0xFF1C1C1E);
-  static const Color darkCardBorder = Color(0xFF38383A);
+  static const Color darkCardBackground = Color(0xFF2A1A0D);
+  static const Color darkCardBorder = Color(0xFF5A3E2A);
 }

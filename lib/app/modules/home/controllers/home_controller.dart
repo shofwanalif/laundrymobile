@@ -4,7 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../../data/providers/auth_provider.dart';
 import '../../../data/models/services_model.dart';
 import '../../../data/services/services_data_service.dart';
-
+import '../../../routes/app_pages.dart';
 class HomeController extends GetxController {
   final AuthProvider _authProvider = Get.find<AuthProvider>();
   final ServicesDataService _servicesDataService =
@@ -166,6 +166,10 @@ class HomeController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void goToLocation() {
+    Get.toNamed(Routes.LOCATION);
   }
 
   // Getters

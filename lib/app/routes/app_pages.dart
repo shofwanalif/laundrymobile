@@ -13,6 +13,8 @@ import '../../middleware/role_check_middleware.dart';
 import '../modules/admin/bindings/services_binding.dart';
 import '../modules/admin/views/service_list_view.dart';
 import '../modules/admin/views/service_form_view.dart';
+import '../modules/location/bindings/location_binding.dart';
+import '../modules/location/views/location_view.dart';
 
 part 'app_routes.dart';
 
@@ -30,11 +32,19 @@ class AppPages {
     ),
 
     GetPage(
-      name: Routes.ADMIN_DASHBOARD,
+      name: _Paths.ADMIN_DASHBOARD,
       page: () => const AdminDashboardView(),
       binding: AdminBinding(),
       middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
     ),
+
+    GetPage(
+      name: _Paths.LOCATION,
+      page: () => const LocationView(),
+      binding: LocationBinding(),
+      middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
+    ),
+
 
     GetPage(
       name: _Paths.SERVICES_ADMIN,
