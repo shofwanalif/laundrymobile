@@ -7,10 +7,7 @@ import '../../../core/theme/app_colors.dart';
 class ServiceList extends GetView<HomeController> {
   final VoidCallback? onServiceTap;
 
-  const ServiceList({
-    super.key,
-    this.onServiceTap,
-  });
+  const ServiceList({super.key, this.onServiceTap});
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +31,7 @@ class ServiceList extends GetView<HomeController> {
           itemCount: controller.services.length,
           itemBuilder: (context, index) {
             final service = controller.services[index];
-            return ServiceCard(
-              service: service,
-              onTap: onServiceTap,
-            );
+            return ServiceCard(service: service, onTap: onServiceTap);
           },
         ),
       );
@@ -53,15 +47,14 @@ class ServiceList extends GetView<HomeController> {
           children: [
             Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: 16),
-            Text(
-              'Gagal Memuat Data',
-              style: Get.textTheme.headlineSmall,
-            ),
+            Text('Gagal Memuat Data', style: Get.textTheme.headlineSmall),
             const SizedBox(height: 8),
             Text(
               controller.errorMessage.value,
               textAlign: TextAlign.center,
-              style: Get.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+              style: Get.textTheme.bodyMedium?.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -85,17 +78,20 @@ class ServiceList extends GetView<HomeController> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.local_laundry_service, size: 64, color: AppColors.textTertiary),
-            const SizedBox(height: 16),
-            Text(
-              'Belum Ada Layanan',
-              style: Get.textTheme.headlineSmall,
+            Icon(
+              Icons.local_laundry_service,
+              size: 64,
+              color: AppColors.textTertiary,
             ),
+            const SizedBox(height: 16),
+            Text('Belum Ada Layanan', style: Get.textTheme.headlineSmall),
             const SizedBox(height: 8),
             Text(
               'Saat ini belum ada layanan laundry yang tersedia',
               textAlign: TextAlign.center,
-              style: Get.textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+              style: Get.textTheme.bodyMedium?.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(

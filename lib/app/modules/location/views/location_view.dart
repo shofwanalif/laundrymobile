@@ -24,8 +24,8 @@ class LocationView extends StatelessWidget {
           style: TextStyle(fontSize: 18),
         ),
         backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? AppColors.primaryDark
-          : AppColors.primaryLight,
+            ? AppColors.primaryDark
+            : AppColors.primaryLight,
         actions: [
           Obx(
             () => IconButton(
@@ -209,7 +209,10 @@ class LocationView extends StatelessWidget {
     );
   }
 
-  Widget _buildCoordinateDisplay(BuildContext context,LocationController controller) {
+  Widget _buildCoordinateDisplay(
+    BuildContext context,
+    LocationController controller,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -415,7 +418,9 @@ class LocationView extends StatelessWidget {
                 _buildInfoCard(
                   context,
                   'Waktu',
-                  DateFormat('HH:mm:ss').format(controller.timestamp!),
+                  DateFormat(
+                    'HH:mm:ss',
+                  ).format(controller.timestamp!.toLocal()),
                   Icons.access_time,
                 ),
               ],
@@ -480,7 +485,12 @@ class LocationView extends StatelessWidget {
   }
 
   /// Build info card
-  Widget _buildInfoCard(BuildContext context, String label, String value, IconData icon) {
+  Widget _buildInfoCard(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -547,11 +557,17 @@ class LocationView extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   'Distance: ${controller.formattedDistance}',
-                  style: const TextStyle(fontSize: 12, color: AppColors.textPrimary),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 Text(
                   'Duration: ${controller.formattedDuration}',
-                  style: const TextStyle(fontSize: 12, color: AppColors.textPrimary),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ],
             ),

@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import '../controllers/admin_controller.dart';
 import '../../../../app/modules/auth/controllers/auth_controller.dart';
 import '../../../routes/app_pages.dart';
+import '../../../data/services/notification_handler.dart';
 
 class AdminDashboardView extends GetView<AdminController> {
   const AdminDashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final notificationHandler = NotificationHandler();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Admin Dashboard"),
@@ -40,8 +43,10 @@ class AdminDashboardView extends GetView<AdminController> {
               title: 'Orders',
               color: Colors.green,
               onTap: () {
-                // TODO: Navigate to orders
-                Get.snackbar('Info', 'Orders feature coming soon');
+                notificationHandler.showNotification(
+                  title: "Coming Soon",
+                  body: "Fitur ini dalam proses pengembangan.",
+                );
               },
             ),
             _buildDashboardCard(
@@ -49,8 +54,7 @@ class AdminDashboardView extends GetView<AdminController> {
               title: 'Customers',
               color: Colors.orange,
               onTap: () {
-                // TODO: Navigate to customers
-                Get.snackbar('Info', 'Customers feature coming soon');
+                notificationHandler.showCustomSoundNotification();
               },
             ),
             _buildDashboardCard(
