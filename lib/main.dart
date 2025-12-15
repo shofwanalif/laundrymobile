@@ -4,32 +4,44 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:laundrymobile/app/data/providers/auth_provider.dart';
-import 'package:laundrymobile/app/data/providers/services_provider.dart'; 
+import 'package:laundrymobile/app/data/providers/services_provider.dart';
 import 'package:laundrymobile/app/data/services/supabase_service.dart';
 import 'package:laundrymobile/app/data/services/hive_service.dart';
+import 'package:laundrymobile/app/data/services/lcoal_storage_service.dart';
 import 'package:laundrymobile/app/data/services/theme_service.dart';
 import 'package:laundrymobile/app/data/services/services_data_service.dart';
 import 'package:laundrymobile/app/routes/app_pages.dart';
 import 'package:laundrymobile/app/modules/auth/controllers/auth_controller.dart';
 import 'package:laundrymobile/app/data/models/services_model.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'app/data/services/notification_handler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
 
   try {
     // Initialize Hive
     await Hive.initFlutter();
     Hive.registerAdapter(ServicesModelAdapter());
-    
+
     await Get.putAsync(() => SupabaseService().init());
-    
-    Get.put(ServicesProvider()); 
+
+    Get.put(ServicesProvider());
     Get.put(AuthProvider());
     Get.put(AuthController());
-    
+
+    // Initialize LocalStorageService SEBELUM NotificationProvider
+    await Get.putAsync(() => LocalStorageService().init());
+
+    final notificationHandler = Get.put(NotificationHandler());
+    await notificationHandler.initPushNotification();
+    await notificationHandler.initLocalNotification();
+
     // Initialize HiveService
     await Get.putAsync(() => HiveService().init());
-    
+
     // Initialize ServicesDataService terakhir (karena bergantung pada yang lain)
     await Get.putAsync(() => ServicesDataService().init());
 
@@ -83,7 +95,9 @@ class MyApp extends StatelessWidget {
           ? Routes.ADMIN_DASHBOARD
           : Routes.HOME;
 
-      debugPrint('🚀 Initial route: $initialRoute (role: ${authController.userRole.value})');
+      debugPrint(
+        '🚀 Initial route: $initialRoute (role: ${authController.userRole.value})',
+      );
 
       return ChangeNotifierProvider(
         create: (_) => ThemeService(),
