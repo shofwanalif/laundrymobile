@@ -97,7 +97,7 @@ class ServiceFormView extends GetView<ServiceController> {
                     ? null
                     : () {
                         if (isEdit) {
-                          controller.updateService(service!);
+                          controller.updateService(service);
                         } else {
                           controller.createService();
                         }
