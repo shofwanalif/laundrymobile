@@ -3,40 +3,49 @@ import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 import 'service_card.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../data/models/service_model.dart';
 
 class ServiceList extends GetView<HomeController> {
-  final VoidCallback? onServiceTap;
+  final void Function(ServiceModel service)? onServiceTap;
 
-  const ServiceList({super.key, this.onServiceTap});
+  const ServiceList({
+    super.key,
+    this.onServiceTap,
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      if (controller.isLoading.value && controller.services.isEmpty) {
-        return const Center(child: CircularProgressIndicator());
-      }
+@override
+Widget build(BuildContext context) {
+  return Obx(() {
+    if (controller.isLoading.value && controller.services.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-      if (controller.hasError.value && controller.services.isEmpty) {
-        return _buildErrorWidget();
-      }
+    if (controller.hasError.value && controller.services.isEmpty) {
+      return _buildErrorWidget();
+    }
 
-      if (!controller.hasData) {
-        return _buildEmptyWidget();
-      }
+    if (!controller.hasData) {
+      return _buildEmptyWidget();
+    }
 
-      return RefreshIndicator(
-        onRefresh: controller.refreshData,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: controller.services.length,
-          itemBuilder: (context, index) {
-            final service = controller.services[index];
-            return ServiceCard(service: service, onTap: onServiceTap);
-          },
-        ),
-      );
-    });
-  }
+    return RefreshIndicator(
+      onRefresh: controller.refreshData,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: controller.services.length,
+        itemBuilder: (context, index) {
+          final service = controller.services[index];
+
+          return ServiceCard(
+            service: service,
+            onTap: () => onServiceTap?.call(service),
+          );
+        },
+      ),
+    );
+  });
+}
+
 
   Widget _buildErrorWidget() {
     return Center(

@@ -4,15 +4,15 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:laundrymobile/app/data/providers/auth_provider.dart';
-import 'package:laundrymobile/app/data/providers/services_provider.dart';
+import 'package:laundrymobile/app/data/providers/service_provider.dart';
 import 'package:laundrymobile/app/data/services/supabase_service.dart';
 import 'package:laundrymobile/app/data/services/hive_service.dart';
 import 'package:laundrymobile/app/data/services/lcoal_storage_service.dart';
 import 'package:laundrymobile/app/data/services/theme_service.dart';
-import 'package:laundrymobile/app/data/services/services_data_service.dart';
+import 'package:laundrymobile/app/data/services/service_data_service.dart';
 import 'package:laundrymobile/app/routes/app_pages.dart';
 import 'package:laundrymobile/app/modules/auth/controllers/auth_controller.dart';
-import 'package:laundrymobile/app/data/models/services_model.dart';
+import 'package:laundrymobile/app/data/models/service_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'app/data/services/notification_handler.dart';
 
@@ -24,7 +24,7 @@ Future<void> main() async {
   try {
     // Initialize Hive
     await Hive.initFlutter();
-    Hive.registerAdapter(ServicesModelAdapter());
+    Hive.registerAdapter(ServiceModelAdapter());
 
     await Get.putAsync(() => SupabaseService().init());
 

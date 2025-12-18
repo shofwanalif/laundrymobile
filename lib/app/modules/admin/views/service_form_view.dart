@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../data/models/services_model.dart';
+import '../../../data/models/service_model.dart';
 import '../controllers/service_controller.dart';
 
 class ServiceFormView extends GetView<ServiceController> {
@@ -9,8 +9,13 @@ class ServiceFormView extends GetView<ServiceController> {
 
   @override
   Widget build(BuildContext context) {
-    final ServicesModel? service = Get.arguments as ServicesModel?;
-    final isEdit = service != null;
+    final ServiceModel? service = Get.arguments as ServiceModel?;
+    final bool isEdit = service != null;
+
+    // isi form saat edit
+    if (isEdit) {
+      controller.editService(service);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -22,12 +27,12 @@ class ServiceFormView extends GetView<ServiceController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Service Name
+            /// ================= SERVICE NAME =================
             TextField(
-              controller: controller.serviceNameController,
+              controller: controller.nameController,
               decoration: InputDecoration(
                 labelText: 'Service Name',
-                hintText: 'e.g., Cuci Kering',
+                hintText: 'e.g. Cuci Kering',
                 prefixIcon: const Icon(Icons.cleaning_services),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -37,7 +42,7 @@ class ServiceFormView extends GetView<ServiceController> {
             ),
             const SizedBox(height: 16),
 
-            // Description
+            /// ================= DESCRIPTION =================
             TextField(
               controller: controller.descriptionController,
               decoration: InputDecoration(
@@ -53,32 +58,48 @@ class ServiceFormView extends GetView<ServiceController> {
             ),
             const SizedBox(height: 16),
 
-            // Price
+            /// ================= PRICE =================
             TextField(
               controller: controller.priceController,
               decoration: InputDecoration(
-                labelText: 'Price (Rp)',
-                hintText: '0',
+                labelText: 'Price per Kg (Rp)',
+                hintText: 'e.g. 7000',
                 prefixIcon: const Icon(Icons.attach_money),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
               keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            /// ================= DURATION =================
+            TextField(
+              controller: controller.durationController,
+              decoration: InputDecoration(
+                labelText: 'Duration',
+                hintText: 'e.g. 2 Days',
+                prefixIcon: const Icon(Icons.timer),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
             ),
             const SizedBox(height: 24),
 
-            // Submit Button
+            /// ================= SUBMIT =================
             Obx(
               () => ElevatedButton(
                 onPressed: controller.isLoading.value
                     ? null
                     : () {
                         if (isEdit) {
-                          controller.updateService(service);
+                          controller.updateService(service!);
                         } else {
-                          controller.createServices();
+                          controller.createService();
                         }
                       },
                 style: ElevatedButton.styleFrom(
@@ -100,15 +121,14 @@ class ServiceFormView extends GetView<ServiceController> {
               ),
             ),
 
+            /// ================= CANCEL =================
             if (isEdit) ...[
               const SizedBox(height: 12),
               OutlinedButton(
                 onPressed: controller.isLoading.value
                     ? null
                     : () {
-                        controller.serviceNameController.clear();
-                        controller.descriptionController.clear();
-                        controller.priceController.clear();
+                        controller.clearForm();
                         Get.back();
                       },
                 style: OutlinedButton.styleFrom(
@@ -117,7 +137,10 @@ class ServiceFormView extends GetView<ServiceController> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text('Cancel', style: TextStyle(fontSize: 16)),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             ],
           ],

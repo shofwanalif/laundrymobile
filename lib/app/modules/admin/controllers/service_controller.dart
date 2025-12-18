@@ -1,18 +1,18 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:laundrymobile/app/core/theme/app_colors.dart';
-import '../../../data/providers/services_provider.dart';
-import '../../../data/models/services_model.dart';
+import '../../../data/providers/service_provider.dart';
+import '../../../data/models/service_model.dart';
 
 class ServiceController extends GetxController {
   final ServicesProvider _servicesProvider = Get.find();
 
-  final services = <ServicesModel>[].obs;
+  final services = <ServiceModel>[].obs;
   final isLoading = false.obs;
 
-  final serviceNameController = TextEditingController();
+  final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final priceController = TextEditingController();
+  final durationController = TextEditingController();
 
   @override
   void onInit() {
@@ -22,110 +22,89 @@ class ServiceController extends GetxController {
 
   @override
   void onClose() {
-    serviceNameController.dispose();
+    nameController.dispose();
     descriptionController.dispose();
     priceController.dispose();
+    durationController.dispose();
     super.onClose();
   }
 
+  /// ================= FETCH =================
   Future<void> fetchServices() async {
     try {
       isLoading.value = true;
       final result = await _servicesProvider.getServices();
-      services.value = result;
-      debugPrint('Fetched ${result.length} services');
+      services.assignAll(result);
     } catch (e) {
-      Get.snackbar(
-        "error!",
-        "failed to fetch services: $e",
-        colorText: AppColors.white,
-        backgroundColor: Colors.red,
-      );
+      _showError('Failed to fetch services: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> createServices() async {
+  /// ================= CREATE =================
+  Future<void> createService() async {
     if (!_validateForm()) return;
 
     try {
       isLoading.value = true;
 
-      final newServices = ServicesModel(
-        serviceName: serviceNameController.text.trim(),
+      final newService = ServiceModel(
+        id: '', // diabaikan saat insert (UUID dari Supabase)
+        name: nameController.text.trim(),
         description: descriptionController.text.trim(),
-        price: int.parse(priceController.text.trim()),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        pricePerKg: int.parse(priceController.text.trim()),
+        duration: durationController.text.trim(),
       );
 
-      await _servicesProvider.createService(newServices);
+      await _servicesProvider.createService(newService);
 
       Get.back();
-      _clearForm();
+      clearForm();
       fetchServices();
 
-      Get.snackbar(
-        'Success',
-        'Service created successfully',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      _showSuccess('Service created successfully');
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to create service: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      _showError('Failed to create service: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> updateService(ServicesModel service) async {
+  /// ================= UPDATE =================
+  Future<void> updateService(ServiceModel service) async {
     if (!_validateForm()) return;
 
     try {
       isLoading.value = true;
 
       final updatedService = service.copyWith(
-        serviceName: serviceNameController.text.trim(),
+        name: nameController.text.trim(),
         description: descriptionController.text.trim(),
-        price: int.parse(priceController.text.trim()),
-        updatedAt: DateTime.now(),
+        pricePerKg: int.parse(priceController.text.trim()),
+        duration: durationController.text.trim(),
       );
 
       await _servicesProvider.updateService(updatedService);
 
       Get.back();
-      _clearForm();
+      clearForm();
       fetchServices();
 
-      Get.snackbar(
-        'Success',
-        'Service updated successfully',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      _showSuccess('Service updated successfully');
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to update service: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      _showError('Failed to update service: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> deleteService(int id, String serviceName) async {
+  /// ================= DELETE =================
+  Future<void> deleteService(ServiceModel service) async {
     final confirm = await Get.dialog<bool>(
       AlertDialog(
         title: const Text('Delete Service'),
-        content: Text('Are you sure you want to delete "$serviceName"?'),
+        content: Text('Are you sure you want to delete "${service.name}"?'),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
@@ -143,82 +122,77 @@ class ServiceController extends GetxController {
     if (confirm == true) {
       try {
         isLoading.value = true;
-        await _servicesProvider.deletedService(id);
-        fetchServices(); // Refresh list
-
-        Get.snackbar(
-          'Success',
-          'Service deleted successfully',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        await _servicesProvider.deleteService(service.id);
+        fetchServices();
+        _showSuccess('Service deleted successfully');
       } catch (e) {
-        Get.snackbar(
-          'Error',
-          'Failed to delete service: $e',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        _showError('Failed to delete service: $e');
       } finally {
         isLoading.value = false;
       }
     }
   }
 
+  /// ================= FORM =================
+  void editService(ServiceModel service) {
+    nameController.text = service.name;
+    descriptionController.text = service.description;
+    priceController.text = service.pricePerKg.toString();
+    durationController.text = service.duration;
+  }
+
+  void clearForm() {
+    nameController.clear();
+    descriptionController.clear();
+    priceController.clear();
+    durationController.clear();
+  }
+
   bool _validateForm() {
-    if (serviceNameController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Validation Error',
-        'Service name is required',
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
+    if (nameController.text.trim().isEmpty) {
+      _showValidation('Service name is required');
       return false;
     }
 
-    if (descriptionController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Validation Error',
-        'Description is required',
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
+    if (priceController.text.trim().isEmpty ||
+        int.tryParse(priceController.text.trim()) == null) {
+      _showValidation('Valid price is required');
       return false;
     }
 
-    if (priceController.text.trim().isEmpty) {
-      Get.snackbar(
-        'Validation Error',
-        'Price is required',
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
-      return false;
-    }
-
-    final price = int.tryParse(priceController.text.trim());
-    if (price == null || price <= 0) {
-      Get.snackbar(
-        'Validation Error',
-        'Please enter a valid price',
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
+    if (durationController.text.trim().isEmpty) {
+      _showValidation('Duration is required');
       return false;
     }
 
     return true;
   }
 
-  void editService(ServicesModel service) {
-    serviceNameController.text = service.serviceName;
-    descriptionController.text = service.description;
-    priceController.text = service.price.toString();
+  /// ================= UI HELPERS =================
+  void _showSuccess(String message) {
+    Get.snackbar(
+      'Success',
+      message,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+    );
   }
 
-  void _clearForm() {
-    serviceNameController.clear();
-    descriptionController.clear();
-    priceController.clear();
+  void _showError(String message) {
+    Get.snackbar(
+      'Error',
+      message,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+
+  void _showValidation(String message) {
+    Get.snackbar(
+      'Validation Error',
+      message,
+      backgroundColor: Colors.orange,
+      colorText: Colors.white,
+    );
   }
 }

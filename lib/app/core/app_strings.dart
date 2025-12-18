@@ -42,4 +42,24 @@ class AppStrings {
   static const String home = 'Home';
   static const String welcome = 'Welcome';
   static const String welcomeBack = 'Welcome Back';
+
+  String orderStatusLabel(String status) {
+  switch (status) {
+    case 'pending':
+      return 'Menunggu';
+    case 'processing':
+      return 'Diproses';
+    case 'washing':
+      return 'Dicuci';
+    case 'completed':
+      return 'Selesai';
+    case 'picked_up':
+      return 'Diambil';
+    case 'cancelled':
+      return 'Dibatalkan';
+    default:
+      return 'Tidak diketahui';
+  }
+}
+
 }
