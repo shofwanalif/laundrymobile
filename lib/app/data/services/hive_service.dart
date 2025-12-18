@@ -1,18 +1,18 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import '../models/services_model.dart';
+import '../models/service_model.dart';
 
 class HiveService extends GetxService {
   static const String _servicesBox = 'services_box';
-  late Box<ServicesModel> _servicesBoxInstance;
+  late Box<ServiceModel> _servicesBoxInstance;
 
   Future<HiveService> init() async {
-    _servicesBoxInstance = await Hive.openBox<ServicesModel>(_servicesBox);
+    _servicesBoxInstance = await Hive.openBox<ServiceModel>(_servicesBox);
     return this;
   }
 
   // Save services to cache
-  Future<void> cacheServices(List<ServicesModel> services) async {
+  Future<void> cacheServices(List<ServiceModel> services) async {
     await _servicesBoxInstance.clear();
     for (final service in services) {
       if (service.id != null) {
@@ -22,7 +22,7 @@ class HiveService extends GetxService {
   }
 
   // Get cached services
-  List<ServicesModel> getCachedServices() {
+  List<ServiceModel> getCachedServices() {
     return _servicesBoxInstance.values.toList();
   }
 
@@ -37,7 +37,7 @@ class HiveService extends GetxService {
   }
 
   // Get specific service by id
-  ServicesModel? getServiceById(int id) {
+  ServiceModel? getServiceById(int id) {
     return _servicesBoxInstance.get(id);
   }
 

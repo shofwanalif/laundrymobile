@@ -6,9 +6,11 @@ import '../../../data/services/theme_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../widgets/service_list.dart';
 import '../widgets/offline_indicator.dart';
+import '../../../data/models/service_model.dart';
+import '../../../routes/app_pages.dart';
 
-class HomePage extends GetView<HomeController> {
-  const HomePage({super.key});
+class HomeView extends GetView<HomeController> {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +107,7 @@ class HomePage extends GetView<HomeController> {
             ),
             accountEmail: Text(
               controller.userEmail ?? 'user@example.com',
-              style: TextStyle(color: AppColors.white.withOpacity(0.8)),
+              style: TextStyle(color: AppColors.white.withValues(alpha: 0.8)),
             ),
             currentAccountPicture: CircleAvatar(
               backgroundColor: AppColors.white,
@@ -120,6 +122,24 @@ class HomePage extends GetView<HomeController> {
             title: const Text('Beranda'),
             onTap: () {
               Get.back();
+            },
+          ),
+
+          ListTile(
+            leading: Icon(Icons.shopping_cart, color: AppColors.primary),
+            title: const Text('Laundry Saya'),
+            onTap: () {
+              Get.back();
+              Get.toNamed(Routes.MY_ORDERS);
+            },
+          ),
+
+          ListTile(
+            leading: Icon(Icons.history, color: AppColors.primary),
+            title: const Text('Riwayat'),
+            onTap: () {
+              Get.back();
+              Get.toNamed(Routes.ORDERS_HISTORY);
             },
           ),
 
@@ -331,13 +351,10 @@ class HomePage extends GetView<HomeController> {
     }
   }
 
-  void _onServiceTap() {
-    Get.snackbar(
-      'Info',
-      'Fitur pemesanan akan segera tersedia',
-      backgroundColor: AppColors.primary,
-      colorText: AppColors.white,
-      snackPosition: SnackPosition.BOTTOM,
+  void _onServiceTap(ServiceModel service) {
+    Get.toNamed(
+      Routes.ORDER,
+      arguments: service,
     );
   }
 }

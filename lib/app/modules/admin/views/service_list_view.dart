@@ -9,6 +9,12 @@ class ServicesListView extends GetView<ServiceController> {
 
   @override
   Widget build(BuildContext context) {
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    );
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -59,11 +65,6 @@ class ServicesListView extends GetView<ServiceController> {
             itemCount: controller.services.length,
             itemBuilder: (context, index) {
               final service = controller.services[index];
-              final formatter = NumberFormat.currency(
-                locale: 'id_ID',
-                symbol: 'Rp ',
-                decimalDigits: 0,
-              );
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
@@ -81,7 +82,7 @@ class ServicesListView extends GetView<ServiceController> {
                     ),
                   ),
                   title: Text(
-                    service.serviceName,
+                    service.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -98,18 +99,18 @@ class ServicesListView extends GetView<ServiceController> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        formatter.format(service.price),
+                        '${formatter.format(service.pricePerKg)} / Kg • ${service.duration}',
                         style: TextStyle(
                           color: Colors.green[700],
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                       ),
                     ],
                   ),
-                  trailing: PopupMenuButton(
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
+                  trailing: PopupMenuButton<String>(
+                    itemBuilder: (context) => const [
+                      PopupMenuItem(
                         value: 'edit',
                         child: Row(
                           children: [
@@ -119,26 +120,28 @@ class ServicesListView extends GetView<ServiceController> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'delete',
                         child: Row(
                           children: [
                             Icon(Icons.delete, color: Colors.red, size: 20),
                             SizedBox(width: 8),
-                            Text('Delete', style: TextStyle(color: Colors.red)),
+                            Text(
+                              'Delete',
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ],
                         ),
                       ),
                     ],
                     onSelected: (value) {
                       if (value == 'edit') {
-                        controller.editService(service);
-                        Get.toNamed(Routes.SERVICE_FORM, arguments: service);
-                      } else if (value == 'delete') {
-                        controller.deleteService(
-                          service.id!,
-                          service.serviceName,
+                        Get.toNamed(
+                          Routes.SERVICE_FORM,
+                          arguments: service,
                         );
+                      } else if (value == 'delete') {
+                        controller.deleteService(service);
                       }
                     },
                   ),
