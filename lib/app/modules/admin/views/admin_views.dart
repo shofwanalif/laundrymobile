@@ -5,6 +5,8 @@ import '../controllers/admin_controller.dart';
 import '../../../../app/modules/auth/controllers/auth_controller.dart';
 import '../../../routes/app_pages.dart';
 import '../../../data/services/notification_handler.dart';
+import '../widgets/card_list.dart';
+import '../widgets/dashboard_card.dart';
 
 class AdminDashboardView extends GetView<AdminController> {
   const AdminDashboardView({super.key});
@@ -14,92 +16,204 @@ class AdminDashboardView extends GetView<AdminController> {
     final notificationHandler = NotificationHandler();
 
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text("Admin Dashboard"),
-        centerTitle: false,
+        backgroundColor: Colors.grey[50],
+        title: const Text(
+          "Dashboard",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => Get.find<AuthController>().logout(),
-            tooltip: 'Logout',
+          Obx(
+            () => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Text(
+                    controller.userName.value,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  PopupMenuButton<String>(
+                    offset: const Offset(0, 45),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    onSelected: (value) {
+                      if (value == 'logout') {
+                        Get.find<AuthController>().logout();
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem<String>(
+                        enabled: false,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              controller.userName.value,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              controller.userEmail,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const PopupMenuDivider(),
+                      const PopupMenuItem<String>(
+                        value: 'logout',
+                        child: Row(
+                          children: [
+                            Icon(Icons.logout, color: Colors.red, size: 20),
+                            SizedBox(width: 10),
+                            Text('Logout', style: TextStyle(color: Colors.red)),
+                          ],
+                        ),
+                      ),
+                    ],
+                    child: const CircleAvatar(
+                      radius: 18,
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.lightBlueAccent,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          children: [
-            _buildDashboardCard(
-              icon: Icons.cleaning_services,
-              title: 'Manage Services',
-              color: Colors.blue,
-              onTap: () => Get.toNamed(Routes.SERVICES_ADMIN),
-            ),
-            _buildDashboardCard(
-              icon: Icons.shopping_bag,
-              title: 'Orders',
-              color: Colors.green,
-              onTap: () {
-                notificationHandler.showNotification(
-                  title: "Coming Soon",
-                  body: "Fitur ini dalam proses pengembangan.",
-                );
-              },
-            ),
-            _buildDashboardCard(
-              icon: Icons.people,
-              title: 'Customers',
-              color: Colors.orange,
-              onTap: () {
-                notificationHandler.showCustomSoundNotification();
-              },
-            ),
-            _buildDashboardCard(
-              icon: Icons.analytics,
-              title: 'Reports',
-              color: Colors.purple,
-              onTap: () {
-                // TODO: Navigate to reports
-                Get.snackbar('Info', 'Reports feature coming soon');
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+        children: [
+          // Dashboard Cards Wrap
+          Obx(() {
+            final cardWidth = (MediaQuery.of(context).size.width - 44) / 2;
+            return Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                SizedBox(
+                  width: cardWidth,
+                  child: DashboardCard(
+                    title: 'Total Cust',
+                    subtitle: '${controller.totalCustomer.value} Customer',
+                    icon: Icons.people,
+                    color: const Color(0xFFE91E63),
+                  ),
+                ),
+                SizedBox(
+                  width: cardWidth,
+                  child: DashboardCard(
+                    title: 'Total Services',
+                    subtitle: '${controller.totalService.value} Services',
+                    icon: Icons.dashboard,
+                    color: const Color(0xFFFF7043),
+                  ),
+                ),
+                SizedBox(
+                  width: cardWidth,
+                  child: DashboardCard(
+                    title: 'Total Orders',
+                    subtitle: '${controller.totalOrder.value} Orders',
+                    icon: Icons.shopping_cart,
+                    color: const Color(0xFFEC407A),
+                  ),
+                ),
+                SizedBox(
+                  width: cardWidth,
+                  child: DashboardCard(
+                    title: 'Total Revenue',
+                    subtitle: 'Rp ${controller.totalRevenue.value}',
+                    icon: Icons.attach_money,
+                    color: const Color(0xFF66BB6A),
+                  ),
+                ),
+              ],
+            );
+          }),
 
-  Widget _buildDashboardCard({
-    required IconData icon,
-    required String title,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 48, color: color),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-              textAlign: TextAlign.center,
+          const SizedBox(height: 24),
+
+          const Text(
+            "Menu",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
-          ],
-        ),
+          ),
+
+          const SizedBox(height: 16),
+
+          CardList(
+            text: "Manage Service",
+            description: "Manage all service",
+            icon: Icons.dashboard,
+            iconColor: Colors.blue,
+            onPressed: () => Get.toNamed(Routes.SERVICES_ADMIN),
+          ),
+
+          const SizedBox(height: 16),
+
+          CardList(
+            text: "Manage Customer",
+            description: "Manage all Customer",
+            icon: Icons.person,
+            iconColor: Colors.blue,
+            onPressed: () {
+              Get.snackbar("Info", "Manage Customer");
+            },
+          ),
+
+          const SizedBox(height: 16),
+
+          CardList(
+            text: "Manage Order",
+            description: "Manage all Order",
+            icon: Icons.shopping_cart,
+            iconColor: Colors.blue,
+            onPressed: () {
+              Get.snackbar("Info", "Manage Order");
+            },
+          ),
+
+          const SizedBox(height: 16),
+
+          CardList(
+            text: "Reports",
+            description: "Manage all Reports",
+            icon: Icons.bar_chart,
+            iconColor: Colors.blue,
+            onPressed: () {
+              Get.snackbar("Info", "Manage Notification");
+            },
+          ),
+
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }

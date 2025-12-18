@@ -34,8 +34,16 @@ class AuthProvider extends GetxService {
         .select('role')
         .eq('id', userId)
         .single();
-
     return response['role'] ?? 'user';
+  }
+
+  Future<String> getUserName(String userId) async {
+    final response = await _supabaseService.client
+        .from('profiles')
+        .select('name')
+        .eq('id', userId)
+        .single();
+    return response['name'] ?? 'user';
   }
 
   // Register

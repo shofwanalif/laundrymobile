@@ -33,7 +33,6 @@ class NotificationHandler {
   );
 
   Future<void> initPushNotification() async {
-    // Request permission
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
@@ -46,12 +45,12 @@ class NotificationHandler {
 
     print('Izin yang diberikan pengguna: ${settings.authorizationStatus}');
 
-    // Get FCM Token
+    // FCM Token
     _firebaseMessaging.getToken().then((token) {
       print('FCM Token: $token');
     });
 
-    // Handle Terminated State
+    // Terminated State
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         print("Pesan saat aplikasi terminated: ${message.notification?.title}");
@@ -175,36 +174,36 @@ class NotificationHandler {
     _logNotification(title, body, 'local');
   }
 
-  Future<void> showProgressNotification() async {
-    const maxProgress = 5;
-    for (var i = 0; i <= maxProgress; i++) {
-      await Future.delayed(const Duration(seconds: 1), () async {
-        final androidPlatformChannelSpecifics = AndroidNotificationDetails(
-          'progress_channel',
-          'Progress Notification',
-          channelDescription: 'Channel for progress notifications',
-          channelShowBadge: false,
-          importance: Importance.max,
-          priority: Priority.high,
-          onlyAlertOnce: true,
-          showProgress: true,
-          maxProgress: maxProgress,
-          progress: i,
-        );
+  // Future<void> showProgressNotification() async {
+  //   const maxProgress = 5;
+  //   for (var i = 0; i <= maxProgress; i++) {
+  //     await Future.delayed(const Duration(seconds: 1), () async {
+  //       final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+  //         'progress_channel',
+  //         'Progress Notification',
+  //         channelDescription: 'Channel for progress notifications',
+  //         channelShowBadge: false,
+  //         importance: Importance.max,
+  //         priority: Priority.high,
+  //         onlyAlertOnce: true,
+  //         showProgress: true,
+  //         maxProgress: maxProgress,
+  //         progress: i,
+  //       );
 
-        final platformChannelSpecifics = NotificationDetails(
-          android: androidPlatformChannelSpecifics,
-        );
+  //       final platformChannelSpecifics = NotificationDetails(
+  //         android: androidPlatformChannelSpecifics,
+  //       );
 
-        await _localNotification.show(
-          1,
-          'Progress Notification',
-          'Download in progress...',
-          platformChannelSpecifics,
-        );
-      });
-    }
-  }
+  //       await _localNotification.show(
+  //         1,
+  //         'Progress Notification',
+  //         'Download in progress...',
+  //         platformChannelSpecifics,
+  //       );
+  //     });
+  //   }
+  // }
 
   Future<void> showCustomSoundNotification() async {
     const androidPlatformChannelSpecifics = AndroidNotificationDetails(

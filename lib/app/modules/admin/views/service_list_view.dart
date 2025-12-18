@@ -10,7 +10,12 @@ class ServicesListView extends GetView<ServiceController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage Services'), centerTitle: true),
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: const Text('Manage Services'),
+        centerTitle: true,
+        backgroundColor: Colors.grey[50],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Get.toNamed(Routes.SERVICE_FORM),
         icon: const Icon(Icons.add),
