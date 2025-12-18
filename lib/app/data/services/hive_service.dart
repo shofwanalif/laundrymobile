@@ -11,34 +11,36 @@ class HiveService extends GetxService {
     return this;
   }
 
-  // Save services to cache
+  // ===================== CACHE =====================
+
+  /// Save services to cache
   Future<void> cacheServices(List<ServiceModel> services) async {
     await _servicesBoxInstance.clear();
+
     for (final service in services) {
-      if (service.id != null) {
-        await _servicesBoxInstance.put(service.id, service);
-      }
+      // UUID dari Supabase → String
+      await _servicesBoxInstance.put(service.id, service);
     }
   }
 
-  // Get cached services
+  /// Get all cached services
   List<ServiceModel> getCachedServices() {
     return _servicesBoxInstance.values.toList();
   }
 
-  // Check if cache exists
+  /// Check if cache exists
   bool hasCachedServices() {
     return _servicesBoxInstance.isNotEmpty;
   }
 
-  // Clear cache
+  /// Clear cache
   Future<void> clearCache() async {
     await _servicesBoxInstance.clear();
   }
 
-  // Get specific service by id
-  ServiceModel? getServiceById(int id) {
-    return _servicesBoxInstance.get(id);
+  /// Get specific service by UUID
+  ServiceModel? getServiceById(String serviceId) {
+    return _servicesBoxInstance.get(serviceId);
   }
 
   @override
