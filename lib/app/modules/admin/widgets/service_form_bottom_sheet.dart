@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import '../../../data/models/services_model.dart';
+import '../../../data/models/service_model.dart';
 import '../../../widgets/common/input_field.dart';
 import '../../../widgets/common/button.dart';
 import '../controllers/service_controller.dart';
 
 class ServiceFormBottomSheet extends GetView<ServiceController> {
-  final ServicesModel? service;
+  final ServiceModel? service;
 
   const ServiceFormBottomSheet({super.key, this.service});
 
@@ -18,6 +18,8 @@ class ServiceFormBottomSheet extends GetView<ServiceController> {
     // Initialize form if editing
     if (isEdit) {
       controller.editService(service!);
+    } else {
+      controller.clearForm();
     }
 
     return Container(
@@ -26,7 +28,7 @@ class ServiceFormBottomSheet extends GetView<ServiceController> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: DraggableScrollableSheet(
-        initialChildSize: 0.85,
+        initialChildSize: 0.9,
         minChildSize: 0.5,
         maxChildSize: 0.95,
         expand: false,
@@ -52,7 +54,7 @@ class ServiceFormBottomSheet extends GetView<ServiceController> {
 
                       // Service Name
                       EmailInputFb1(
-                        inputController: controller.serviceNameController,
+                        inputController: controller.nameController,
                         label: 'Service Name',
                         hintText: 'e.g., Cuci Kering',
                       ),
@@ -69,9 +71,17 @@ class ServiceFormBottomSheet extends GetView<ServiceController> {
                       // Price
                       EmailInputFb1(
                         inputController: controller.priceController,
-                        label: 'Price (Rp)',
+                        label: 'Price per Kg (Rp)',
                         hintText: '0',
                         keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Duration
+                      EmailInputFb1(
+                        inputController: controller.durationController,
+                        label: 'Duration',
+                        hintText: 'e.g., 2 Days',
                       ),
                       const SizedBox(height: 24),
 
@@ -250,7 +260,7 @@ class ServiceFormBottomSheet extends GetView<ServiceController> {
               if (isEdit) {
                 controller.updateService(service!);
               } else {
-                controller.createServices();
+                controller.createService();
               }
             },
             width: double.infinity,
@@ -275,16 +285,13 @@ class ServiceFormBottomSheet extends GetView<ServiceController> {
   }
 
   void _clearAndClose() {
-    controller.serviceNameController.clear();
-    controller.descriptionController.clear();
-    controller.priceController.clear();
-    controller.removeSelectedImage();
+    controller.clearForm();
     Get.back();
   }
 }
 
 // Helper function to show the bottom sheet
-void showServiceFormBottomSheet({ServicesModel? service}) {
+void showServiceFormBottomSheet({ServiceModel? service}) {
   Get.bottomSheet(
     ServiceFormBottomSheet(service: service),
     isScrollControlled: true,

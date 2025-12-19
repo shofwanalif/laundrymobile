@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import '../models/services_model.dart';
-import '../providers/services_provider.dart';
+import '../models/service_model.dart';
+import '../providers/service_provider.dart';
 import 'hive_service.dart';
 
 class ServicesDataService extends GetxService {
@@ -12,7 +12,7 @@ class ServicesDataService extends GetxService {
   }
 
   // Get services with cache strategy
-  Future<List<ServicesModel>> getServices() async {
+  Future<List<ServiceModel>> getServices() async {
     try {
       // Try to fetch from Supabase
       final services = await _servicesProvider.getServices();
@@ -29,7 +29,7 @@ class ServicesDataService extends GetxService {
   }
 
   // Get cached services only
-  List<ServicesModel> getCachedServices() {
+  List<ServiceModel> getCachedServices() {
     return _hiveService.getCachedServices();
   }
 
@@ -39,7 +39,7 @@ class ServicesDataService extends GetxService {
   }
 
   // Refresh data
-  Future<List<ServicesModel>> refreshData() {
+  Future<List<ServiceModel>> refreshData() {
     return getServices();
   }
 }

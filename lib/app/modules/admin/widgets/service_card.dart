@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/services_model.dart';
+import '../../../data/models/service_model.dart';
 
 class AdminServiceCard extends StatelessWidget {
-  final ServicesModel service;
+  final ServiceModel service;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final VoidCallback? onTap;
@@ -53,7 +53,7 @@ class AdminServiceCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          service.serviceName,
+                          service.name,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -80,6 +80,9 @@ class AdminServiceCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(height: 8),
+                  // Duration badge
+                  _buildDurationBadge(isDark),
                   const SizedBox(height: 12),
                   // Action Buttons Row
                   _buildActionButtons(isDark),
@@ -156,12 +159,37 @@ class AdminServiceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        _formatPrice(service.price),
+        _formatPrice(service.pricePerKg),
         style: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
+      ),
+    );
+  }
+
+  Widget _buildDurationBadge(bool isDark) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.orange.withOpacity(isDark ? 0.2 : 0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.timer_outlined, size: 14, color: Colors.orange[700]),
+          const SizedBox(width: 4),
+          Text(
+            service.duration,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.orange[700],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -215,11 +243,11 @@ class AdminServiceCard extends StatelessWidget {
   String _formatPrice(int price) {
     if (price >= 1000000) {
       double priceInM = price / 1000000;
-      return 'Rp ${priceInM.toStringAsFixed(price % 1000000 == 0 ? 0 : 1)}jt';
+      return 'Rp ${priceInM.toStringAsFixed(price % 1000000 == 0 ? 0 : 1)}jt/kg';
     } else if (price >= 1000) {
       double priceInK = price / 1000;
-      return 'Rp ${priceInK.toStringAsFixed(price % 1000 == 0 ? 0 : 1)}k';
+      return 'Rp ${priceInK.toStringAsFixed(price % 1000 == 0 ? 0 : 1)}k/kg';
     }
-    return 'Rp $price';
+    return 'Rp $price/kg';
   }
 }

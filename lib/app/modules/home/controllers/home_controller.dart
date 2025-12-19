@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../../data/providers/auth_provider.dart';
-import '../../../data/models/services_model.dart';
-import '../../../data/services/services_data_service.dart';
+import '../../../data/models/service_model.dart';
+import '../../../data/services/service_data_service.dart';
 import '../../../routes/app_pages.dart';
+
 class HomeController extends GetxController {
   final AuthProvider _authProvider = Get.find<AuthProvider>();
   final ServicesDataService _servicesDataService =
@@ -14,7 +15,7 @@ class HomeController extends GetxController {
   String? get userEmail => _authProvider.currentUser?.email;
 
   // Reactive states
-  final RxList<ServicesModel> services = <ServicesModel>[].obs;
+  final RxList<ServiceModel> services = <ServiceModel>[].obs;
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
   final RxBool hasError = false.obs;
@@ -173,6 +174,6 @@ class HomeController extends GetxController {
   }
 
   // Getters
-  List<ServicesModel> get servicesList => services.toList();
+  List<ServiceModel> get servicesList => services.toList();
   bool get hasData => services.isNotEmpty;
 }

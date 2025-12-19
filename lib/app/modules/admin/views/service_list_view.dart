@@ -82,8 +82,8 @@ class ServicesListView extends GetView<ServiceController> {
                   onEdit: () => showServiceFormBottomSheet(service: service),
                   onDelete: () {
                     controller.deleteService(
-                      service.id!,
-                      service.serviceName,
+                      service.id,
+                      service.name,
                       imageUrl: service.imageUrl,
                     );
                   },

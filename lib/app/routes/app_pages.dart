@@ -5,6 +5,12 @@ import '../modules/auth/views/login_view.dart';
 import '../modules/auth/views/register_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/order/bindings/order_binding.dart';
+import '../modules/order/views/order_view.dart';
+import '../modules/my_orders/bindings/my_orders_binding.dart';
+import '../modules/my_orders/views/my_orders_view.dart';
+import '../modules/orders_history/bindings/orders_history_binding.dart';
+import '../modules/orders_history/views/orders_history_view.dart';
 import '../modules/admin/bindings/admin_binding.dart';
 import '../modules/admin/views/admin_views.dart';
 import '../../middleware/auth_middleware.dart';
@@ -24,8 +30,29 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => const HomePage(),
+      page: () => const HomeView(),
       binding: HomeBinding(),
+      middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
+    ),
+
+    GetPage(
+      name: _Paths.ORDER,
+      page: () => const OrderView(),
+      binding: OrderBinding(),
+      middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
+    ),
+
+    GetPage(
+      name: _Paths.MY_ORDERS,
+      page: () => const MyOrdersView(),
+      binding: MyOrdersBinding(),
+      middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
+    ),
+
+    GetPage(
+      name: _Paths.ORDERS_HISTORY,
+      page: () => const OrdersHistoryView(),
+      binding: OrdersHistoryBinding(),
       middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
     ),
 
