@@ -21,6 +21,7 @@ class ServicesModelAdapter extends TypeAdapter<ServicesModel> {
       serviceName: fields[1] as String,
       description: fields[2] as String,
       price: fields[3] as int,
+      imageUrl: fields[6] as String?,
       createdAt: fields[4] as DateTime?,
       updatedAt: fields[5] as DateTime?,
     );
@@ -29,7 +30,7 @@ class ServicesModelAdapter extends TypeAdapter<ServicesModel> {
   @override
   void write(BinaryWriter writer, ServicesModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class ServicesModelAdapter extends TypeAdapter<ServicesModel> {
       ..writeByte(4)
       ..write(obj.createdAt)
       ..writeByte(5)
-      ..write(obj.updatedAt);
+      ..write(obj.updatedAt)
+      ..writeByte(6)
+      ..write(obj.imageUrl);
   }
 
   @override

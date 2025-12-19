@@ -8,7 +8,6 @@ class AuthMiddleware extends GetMiddleware {
 
   @override
   RouteSettings? redirect(String? route) {
-    // Jika tidak login → redirect ke login
     if (!_authProvider.isAuthenticated) {
       return const RouteSettings(name: Routes.LOGIN);
     }

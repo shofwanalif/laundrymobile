@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-//import 'package:laundrymobile/app/core/theme/app_colors.dart';
 import '../controllers/admin_controller.dart';
 import '../../../../app/modules/auth/controllers/auth_controller.dart';
 import '../../../routes/app_pages.dart';
@@ -105,115 +104,115 @@ class AdminDashboardView extends GetView<AdminController> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          // Dashboard Cards Wrap
-          Obx(() {
-            final cardWidth = (MediaQuery.of(context).size.width - 44) / 2;
-            return Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                SizedBox(
-                  width: cardWidth,
-                  child: DashboardCard(
-                    title: 'Total Cust',
-                    subtitle: '${controller.totalCustomer.value} Customer',
-                    icon: Icons.people,
-                    color: const Color(0xFFE91E63),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: [
+            // Dashboard Cards Wrap
+            Obx(() {
+              final cardWidth = (MediaQuery.of(context).size.width - 44) / 2;
+              return Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  SizedBox(
+                    width: cardWidth,
+                    child: DashboardCard(
+                      title: 'Total Cust',
+                      subtitle: '${controller.totalCustomer.value} Customer',
+                      icon: Icons.people,
+                      color: const Color(0xFFE91E63),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: cardWidth,
-                  child: DashboardCard(
-                    title: 'Total Services',
-                    subtitle: '${controller.totalService.value} Services',
-                    icon: Icons.dashboard,
-                    color: const Color(0xFFFF7043),
+                  SizedBox(
+                    width: cardWidth,
+                    child: DashboardCard(
+                      title: 'Total Services',
+                      subtitle: '${controller.totalService.value} Services',
+                      icon: Icons.dashboard,
+                      color: const Color(0xFFFF7043),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: cardWidth,
-                  child: DashboardCard(
-                    title: 'Total Orders',
-                    subtitle: '${controller.totalOrder.value} Orders',
-                    icon: Icons.shopping_cart,
-                    color: const Color(0xFFEC407A),
+                  SizedBox(
+                    width: cardWidth,
+                    child: DashboardCard(
+                      title: 'Total Orders',
+                      subtitle: '${controller.totalOrder.value} Orders',
+                      icon: Icons.shopping_cart,
+                      color: const Color(0xFFEC407A),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: cardWidth,
-                  child: DashboardCard(
-                    title: 'Total Revenue',
-                    subtitle: 'Rp ${controller.totalRevenue.value}',
-                    icon: Icons.attach_money,
-                    color: const Color(0xFF66BB6A),
+                  SizedBox(
+                    width: cardWidth,
+                    child: DashboardCard(
+                      title: 'Total Revenue',
+                      subtitle: 'Rp ${controller.totalRevenue.value}',
+                      icon: Icons.attach_money,
+                      color: const Color(0xFF66BB6A),
+                    ),
                   ),
-                ),
-              ],
-            );
-          }),
+                ],
+              );
+            }),
 
-          const SizedBox(height: 24),
+            const SizedBox(height: 24),
 
-          const Text(
-            "Menu",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            const Text(
+              "Menu",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
 
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          CardList(
-            text: "Manage Service",
-            description: "Manage all service",
-            icon: Icons.dashboard,
-            iconColor: Colors.blue,
-            onPressed: () => Get.toNamed(Routes.SERVICES_ADMIN),
-          ),
+            CardList(
+              text: "Manage Service",
+              description: "Manage all service",
+              icon: Icons.dashboard,
+              iconColor: Colors.blue,
+              onPressed: () => Get.toNamed(Routes.SERVICES_ADMIN),
+            ),
 
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          CardList(
-            text: "Manage Customer",
-            description: "Manage all Customer",
-            icon: Icons.person,
-            iconColor: Colors.blue,
-            onPressed: () {
-              Get.snackbar("Info", "Manage Customer");
-            },
-          ),
+            CardList(
+              text: "Manage Customer",
+              description: "Manage all Customer",
+              icon: Icons.person,
+              iconColor: Colors.blue,
+              onPressed: () {
+                Get.snackbar("Info", "Manage Customer");
+              },
+            ),
 
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          CardList(
-            text: "Manage Order",
-            description: "Manage all Order",
-            icon: Icons.shopping_cart,
-            iconColor: Colors.blue,
-            onPressed: () {
-              Get.snackbar("Info", "Manage Order");
-            },
-          ),
+            CardList(
+              text: "Manage Order",
+              description: "Manage all Order",
+              icon: Icons.shopping_cart,
+              iconColor: Colors.blue,
+              onPressed: () {
+                Get.snackbar("Info", "Manage Order");
+              },
+            ),
 
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-          CardList(
-            text: "Reports",
-            description: "Manage all Reports",
-            icon: Icons.bar_chart,
-            iconColor: Colors.blue,
-            onPressed: () {
-              Get.snackbar("Info", "Manage Notification");
-            },
-          ),
-
-          const SizedBox(height: 16),
-        ],
+            CardList(
+              text: "Reports",
+              description: "Manage all Reports",
+              icon: Icons.bar_chart,
+              iconColor: Colors.blue,
+              onPressed: () {
+                Get.snackbar("Info", "Manage Notification");
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

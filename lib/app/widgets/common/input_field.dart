@@ -58,7 +58,6 @@ class EmailInputFb1 extends StatelessWidget {
             keyboardType: keyboardType,
             style: const TextStyle(fontSize: 14, color: Colors.black),
             decoration: InputDecoration(
-              // prefixIcon: Icon(Icons.email),
               filled: true,
               fillColor: accentColor,
               hintText: hintText ?? 'Enter text',
