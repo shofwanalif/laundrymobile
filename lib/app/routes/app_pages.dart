@@ -8,11 +8,9 @@ import '../modules/home/views/home_view.dart';
 import '../modules/admin/bindings/admin_binding.dart';
 import '../modules/admin/views/admin_views.dart';
 import '../../middleware/auth_middleware.dart';
-//import '../../middleware/admin_middleware.dart';
 import '../../middleware/role_check_middleware.dart';
 import '../modules/admin/bindings/services_binding.dart';
 import '../modules/admin/views/service_list_view.dart';
-import '../modules/admin/views/service_form_view.dart';
 import '../modules/location/bindings/location_binding.dart';
 import '../modules/location/views/location_view.dart';
 
@@ -45,17 +43,9 @@ class AppPages {
       middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
     ),
 
-
     GetPage(
       name: _Paths.SERVICES_ADMIN,
       page: () => const ServicesListView(),
-      binding: ServicesBinding(),
-      middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
-    ),
-
-    GetPage(
-      name: _Paths.SERVICE_FORM,
-      page: () => const ServiceFormView(),
       binding: ServicesBinding(),
       middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
     ),
