@@ -4,69 +4,69 @@ import '../services/supabase_service.dart';
 
 class AddressProvider extends GetxService {
   final SupabaseService _supabase = Get.find();
+  static const String _tableName = 'addresses';
 
-  // ===================== USER =====================
-
-  /// ➕ CREATE ADDRESS
   Future<void> createAddress(Map<String, dynamic> data) async {
     try {
-      await _supabase.from('addresses').insert(data);
+      await _supabase.from(_tableName).insert(data);
     } catch (e) {
       throw Exception('Create address failed: $e');
     }
   }
 
-  /// 📍 GET USER ADDRESSES
   Future<List<AddressModel>> getUserAddresses(String userId) async {
     try {
-      final response = await _supabase
-          .from('addresses')
+      final List<Map<String, dynamic>> response = await _supabase
+          .from(_tableName)
           .select()
           .eq('user_id', userId)
+          .eq('is_active', true)
           .order('created_at', ascending: false);
 
-      return (response as List).map((e) => AddressModel.fromMap(e)).toList();
+      return response.map((e) => AddressModel.fromMap(e)).toList();
     } catch (e) {
       throw Exception('Fetch addresses failed: $e');
     }
   }
 
-  /// ✏️ UPDATE ADDRESS
-Future<void> updateAddress(String id, Map<String, dynamic> data) async {
-  try {
-    await _supabase
-        .from('addresses')
-        .update({
-          ...data, // Mengambil semua data dari payload (label, address, lat, lng)
-          'updated_at': DateTime.now().toIso8601String(),
-        })
-        .eq('id', id);
-  } catch (e) {
-    throw Exception('Update address failed: $e');
-  }
-}
-
-  /// ❌ DELETE ADDRESS
-  Future<void> deleteAddress(String addressId) async {
+  Future<void> updateAddress(String id, Map<String, dynamic> data) async {
     try {
-      await _supabase.from('addresses').delete().eq('id', addressId);
+      await _supabase
+          .from(_tableName)
+          .update({
+            ...data,
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
+          })
+          .eq('id', id);
     } catch (e) {
-      throw Exception('Delete address failed: $e');
+      throw Exception('Update address failed: $e');
     }
   }
 
-  // ===================== SHARED =====================
+  Future<void> deleteAddress(String addressId) async {
+    try {
+      await _supabase
+          .from(_tableName)
+          .update({
+            'is_active': false,
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
+          })
+          .eq('id', addressId);
+    } catch (e) {
+      throw Exception('Soft delete address failed: $e');
+    }
+  }
 
-  /// 🔍 GET ADDRESS BY ID
-  Future<Map<String, dynamic>?> getAddressById(String addressId) async {
+  Future<AddressModel?> getAddressById(String addressId) async {
     try {
       final response = await _supabase
-          .from('addresses')
+          .from(_tableName)
           .select()
           .eq('id', addressId)
-          .single();
+          .eq('is_active', true)
+          .maybeSingle();
 
-      return response;
+      return response != null ? AddressModel.fromMap(response) : null;
     } catch (_) {
       return null;
     }

@@ -68,6 +68,10 @@ class MyOrdersView extends GetView<MyOrdersController> {
     ).format(order.createdAt);
     final Color statusColor = _statusColor(order.status);
 
+    final address = controller.addresses.firstWhereOrNull(
+      (a) => a.id == order.addressId,
+    );
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -85,14 +89,14 @@ class MyOrdersView extends GetView<MyOrdersController> {
         ],
       ),
       child: InkWell(
-        onTap: () => {},
+        onTap: () => {}, // Anda bisa arahkan ke halaman detail di sini
         borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- ICON SECTION ---
+              // --- ICON STATUS ---
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -111,6 +115,7 @@ class MyOrdersView extends GetView<MyOrdersController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Header: ID & Badge
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -127,7 +132,8 @@ class MyOrdersView extends GetView<MyOrdersController> {
                         _buildStatusBadge(statusLabel, statusColor, isDark),
                       ],
                     ),
-                    const SizedBox(height: 4),
+
+                    // Tanggal
                     Text(
                       orderDate,
                       style: TextStyle(
@@ -138,7 +144,44 @@ class MyOrdersView extends GetView<MyOrdersController> {
                       ),
                     ),
 
-                    // --- ORDER NOTE SECTION ---
+                    const SizedBox(height: 12),
+
+                    // ALAMAT PENGAMBILAN / PENGANTARAN
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_on_rounded,
+                          size: 14,
+                          color: AppColors.primary,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            address?.label ?? 'Alamat tidak tersedia',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (address != null)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, top: 2),
+                        child: Text(
+                          address.address,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+
+                    // --- CATATAN (Jika ada) ---
                     if (order.note != null && order.note.isNotEmpty) ...[
                       const SizedBox(height: 12),
                       Container(
@@ -153,7 +196,7 @@ class MyOrdersView extends GetView<MyOrdersController> {
                                 )
                               : AppColors.surfaceVariant.withValues(alpha: 0.5),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border(
+                          border: const Border(
                             left: BorderSide(
                               color: AppColors.primary,
                               width: 3,
@@ -162,12 +205,10 @@ class MyOrdersView extends GetView<MyOrdersController> {
                         ),
                         child: Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.sticky_note_2_rounded,
                               size: 14,
-                              color: isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.textSecondary,
+                              color: Colors.grey,
                             ),
                             const SizedBox(width: 8),
                             Expanded(
@@ -190,6 +231,8 @@ class MyOrdersView extends GetView<MyOrdersController> {
                     ],
 
                     const Divider(height: 24),
+
+                    // --- INFO BERAT & HARGA ---
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

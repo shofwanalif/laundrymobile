@@ -38,7 +38,6 @@ class AddAddressController extends GetxController {
   void onInit() {
     super.onInit();
     
-    // --- CEK APAKAH ADA ARGUMEN (MODE EDIT) ---
     if (Get.arguments != null) {
       _setupEditMode(Get.arguments);
     } else {
@@ -134,6 +133,7 @@ class AddAddressController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
       Get.snackbar('Gagal', 'Terjadi kesalahan saat memproses data');
+      print(e);
     } finally {
       isSaving.value = false;
     }

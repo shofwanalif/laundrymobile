@@ -32,6 +32,10 @@ class OrderModel extends HiveObject {
   @HiveField(8)
   DateTime? updatedAt;
 
+  // Menambahkan field addressId dengan index HiveField baru
+  @HiveField(9)
+  String? addressId;
+
   OrderModel({
     required this.id,
     required this.userId,
@@ -42,6 +46,7 @@ class OrderModel extends HiveObject {
     this.note,
     required this.createdAt,
     this.updatedAt,
+    this.addressId, // Tambahkan di constructor
   });
 
   /// FROM SUPABASE
@@ -54,6 +59,7 @@ class OrderModel extends HiveObject {
       totalPrice: map['total_price'],
       status: map['status'],
       note: map['note'],
+      addressId: map['address_id'], // Map dari kolom database
       createdAt: DateTime.parse(map['created_at']),
       updatedAt: map['updated_at'] != null
           ? DateTime.parse(map['updated_at'])
@@ -66,6 +72,7 @@ class OrderModel extends HiveObject {
     return {
       'user_id': userId,
       'service_id': serviceId,
+      'address_id': addressId, // Tambahkan untuk insert
       'weight': weight,
       'total_price': totalPrice,
       'status': status,
@@ -80,6 +87,7 @@ class OrderModel extends HiveObject {
       'total_price': totalPrice,
       'status': status,
       'note': note,
+      'address_id': addressId, // Tambahkan jika address bisa diubah
       'updated_at': DateTime.now().toIso8601String(),
     };
   }
@@ -90,6 +98,7 @@ class OrderModel extends HiveObject {
     String? status,
     String? note,
     DateTime? updatedAt,
+    String? addressId, // Tambahkan di copyWith
   }) {
     return OrderModel(
       id: id,
@@ -101,6 +110,7 @@ class OrderModel extends HiveObject {
       note: note ?? this.note,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      addressId: addressId ?? this.addressId,
     );
   }
 }
