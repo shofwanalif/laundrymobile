@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "561748156690",
-    "project_id": "mobilelaundry-2f460",
-    "storage_bucket": "mobilelaundry-2f460.firebasestorage.app"
+    "project_number": "984071798598",
+    "project_id": "cemerlaund",
+    "storage_bucket": "cemerlaund.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:561748156690:android:005cce42cd137ccb4313cb",
+        "mobilesdk_app_id": "1:984071798598:android:70618bfa805e0b9e11ef47",
         "android_client_info": {
           "package_name": "com.example.laundrymobile"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCmb1Zt7iTU3diO0Mmn_RRj85LRdnfv4mU"
+          "current_key": "AIzaSyAFlB4LFXuICgbxfkaHnY87lzzJZD5muEc"
         }
       ],
       "services": {
