@@ -36,24 +36,33 @@ class AdminController extends GetxController {
 
   Future<void> fetchDashboardStats() async {
     try {
+      // Total customers
       final customers = await _supabaseService.client
           .from('profiles')
           .select('id')
           .eq('role', 'user');
       totalCustomer.value = customers.length;
 
+      // Total services
       final services = await _supabaseService.client
           .from('services')
           .select('id');
       totalService.value = services.length;
 
-      // Total orders (placeholder - tabel belum ada)
-      // final orders = await _supabaseService.client.from('orders').select('id');
-      // totalOrder.value = orders.length;
-      totalOrder.value = 0;
+      // Total orders
+      final orders = await _supabaseService.client
+          .from('orders')
+          .select('id, total_price');
+      totalOrder.value = orders.length;
 
-      // Total revenue (placeholder - tabel belum ada)
-      totalRevenue.value = 0;
+      // Total revenue (sum of all total_price)
+      int revenue = 0;
+      for (var order in orders) {
+        if (order['total_price'] != null) {
+          revenue += (order['total_price'] as num).toInt();
+        }
+      }
+      totalRevenue.value = revenue;
     } catch (e) {
       // Handle error silently
     }

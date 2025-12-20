@@ -33,15 +33,6 @@ class AdminDashboardView extends GetView<AdminController> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 children: [
-                  Text(
-                    controller.userName.value,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
                   PopupMenuButton<String>(
                     offset: const Offset(0, 45),
                     shape: RoundedRectangleBorder(
@@ -118,7 +109,7 @@ class AdminDashboardView extends GetView<AdminController> {
                   SizedBox(
                     width: cardWidth,
                     child: DashboardCard(
-                      title: 'Total Cust',
+                      title: 'Total Pelanggan',
                       subtitle: '${controller.totalCustomer.value} Customer',
                       icon: Icons.people,
                       color: const Color(0xFFE91E63),
@@ -127,7 +118,7 @@ class AdminDashboardView extends GetView<AdminController> {
                   SizedBox(
                     width: cardWidth,
                     child: DashboardCard(
-                      title: 'Total Services',
+                      title: 'Total Layanan',
                       subtitle: '${controller.totalService.value} Services',
                       icon: Icons.dashboard,
                       color: const Color(0xFFFF7043),
@@ -136,7 +127,7 @@ class AdminDashboardView extends GetView<AdminController> {
                   SizedBox(
                     width: cardWidth,
                     child: DashboardCard(
-                      title: 'Total Orders',
+                      title: 'Total Order',
                       subtitle: '${controller.totalOrder.value} Orders',
                       icon: Icons.shopping_cart,
                       color: const Color(0xFFEC407A),
@@ -145,7 +136,7 @@ class AdminDashboardView extends GetView<AdminController> {
                   SizedBox(
                     width: cardWidth,
                     child: DashboardCard(
-                      title: 'Total Revenue',
+                      title: 'Pendapatan',
                       subtitle: 'Rp ${controller.totalRevenue.value}',
                       icon: Icons.attach_money,
                       color: const Color(0xFF66BB6A),
@@ -203,7 +194,7 @@ class AdminDashboardView extends GetView<AdminController> {
             const SizedBox(height: 16),
 
             CardList(
-              text: "Reports",
+              text: "Laporan",
               description: "Manage all Reports",
               icon: Icons.bar_chart,
               iconColor: Colors.blue,

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../controllers/auth_controller.dart';
-import '../../../core/app_strings.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../widgets/common/input_field.dart';
+import '../../../widgets/common/button.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -15,7 +15,6 @@ class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _obscurePassword = true.obs;
 
   @override
   void dispose() {
@@ -29,142 +28,127 @@ class _LoginViewState extends State<LoginView> {
     final controller = Get.find<AuthController>();
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: Colors.grey[50],
       body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          children: [
-            SizedBox(height: 20),
-            Container(
-              height: 100,
-              alignment: Alignment.centerLeft,
-              child: Image.asset("assets/logo/withtext.png"),
-            ),
-
-            Text(
-              'Welcome Back!',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: AppColors.text,
-              ),
-            ),
-
-            Text(
-              AppStrings.loginToContinue,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-            ),
-            SizedBox(height: 30),
-            Form(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Form(
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextFormField(
-                    controller: _emailController,
+                  const SizedBox(height: 40),
+
+                  // Logo
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Image.asset(
+                      'assets/logo/cemerlaund.png',
+                      height: 80,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Welcome Text
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Selamat Datang',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Subtitle
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Silahkan masuk untuk melanjutkan',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Email Input
+                  EmailInputFb1(
+                    inputController: _emailController,
+                    label: 'Email',
+                    hintText: 'Masukkan email',
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.email,
-                      hintText: 'name@mail.com',
-                      prefixIcon: Icon(Icons.email_outlined),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: controller.validateEmail,
-                    enabled: !controller.isLoading.value,
+                    prefixIcon: Icons.email_outlined,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
+                  // Password Input
+                  EmailInputFb1(
+                    inputController: _passwordController,
+                    label: 'Password',
+                    hintText: 'Masukkan password',
+                    obscureText: true,
+                    prefixIcon: Icons.lock_outline,
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Sign In Button
                   Obx(
-                    () => TextFormField(
-                      controller: _passwordController,
-                      obscureText: _obscurePassword.value,
-                      decoration: InputDecoration(
-                        labelText: AppStrings.password,
-                        hintText: '••••••••',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword.value
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
+                    () => controller.isLoading.value
+                        ? const Center(child: CircularProgressIndicator())
+                        : Button(
+                            text: 'Masuk',
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                controller.login(
+                                  _emailController.text,
+                                  _passwordController.text,
+                                );
+                              }
+                            },
+                            width: double.infinity,
+                            height: 50,
+                            gradientColors: const [
+                              Color(0xFF0072E5),
+                              Color(0xFF75D8FC),
+                            ],
+                            borderRadius: 12,
                           ),
-                          onPressed: () =>
-                              _obscurePassword.value = !_obscurePassword.value,
-                        ),
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: controller.validatePassword,
-                      enabled: !controller.isLoading.value,
-                    ),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                  Obx(
-                    () => SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton(
-                        onPressed: controller.isLoading.value
-                            ? null
-                            : () {
-                                if (_formKey.currentState!.validate()) {
-                                  controller.login(
-                                    _emailController.text,
-                                    _passwordController.text,
-                                  );
-                                }
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.orangePrimary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: controller.isLoading.value
-                            ? const SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
-                                  ),
-                                ),
-                              )
-                            : Text(
-                                AppStrings.login,
-                                style: TextStyle(color: AppColors.white),
-                              ),
-                      ),
-                    ),
-                  ),
-
+                  // Register Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        AppStrings.dontHaveAccount,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.text,
-                        ),
+                        "Belum punya akun? ",
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
-                      TextButton(
-                        onPressed: controller.isLoading.value
-                            ? null
-                            : controller.goToRegister,
-                        child: const Text(
-                          AppStrings.register,
-                          style: TextStyle(color: AppColors.orangePrimary),
+                      Obx(
+                        () => GestureDetector(
+                          onTap: controller.isLoading.value
+                              ? null
+                              : controller.goToRegister,
+                          child: const Text(
+                            'Daftar',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0072E5),
+                            ),
+                          ),
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

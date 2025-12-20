@@ -38,7 +38,6 @@ class ServiceController extends GetxController {
     super.onClose();
   }
 
-  /// ================= FETCH =================
   Future<void> fetchServices() async {
     try {
       isLoading.value = true;
@@ -51,7 +50,6 @@ class ServiceController extends GetxController {
     }
   }
 
-  /// ================= IMAGE PICKER =================
   Future<void> pickImageFromGallery() async {
     try {
       final XFile? pickedFile = await _imagePicker.pickImage(
@@ -136,7 +134,6 @@ class ServiceController extends GetxController {
     );
   }
 
-  /// ================= CREATE =================
   Future<void> createService() async {
     if (!_validateForm()) return;
 
@@ -172,22 +169,21 @@ class ServiceController extends GetxController {
       QuickAlert.show(
         context: Get.context!,
         type: QuickAlertType.success,
-        title: 'Success',
-        text: 'Service created successfully',
+        title: 'Sukkses',
+        text: 'Layanan berhasil ditambahkan',
       );
     } catch (e) {
       QuickAlert.show(
         context: Get.context!,
         type: QuickAlertType.error,
-        title: 'Error',
-        text: 'Failed to create service: $e',
+        title: 'Gagal',
+        text: 'Gagal menambahkan layanan: $e',
       );
     } finally {
       isLoading.value = false;
     }
   }
 
-  /// ================= UPDATE =================
   Future<void> updateService(ServiceModel service) async {
     if (!_validateForm()) return;
 
@@ -233,22 +229,21 @@ class ServiceController extends GetxController {
       QuickAlert.show(
         context: Get.context!,
         type: QuickAlertType.success,
-        title: 'Success',
-        text: 'Service updated successfully',
+        title: 'Sukkses',
+        text: 'Layanan berhasil diperbarui',
       );
     } catch (e) {
       QuickAlert.show(
         context: Get.context!,
         type: QuickAlertType.error,
-        title: 'Error',
-        text: 'Failed to update service: $e',
+        title: 'Gagal',
+        text: 'Gagal memperbarui layanan: $e',
       );
     } finally {
       isLoading.value = false;
     }
   }
 
-  /// ================= DELETE =================
   Future<void> deleteService(
     String id,
     String serviceName, {
@@ -279,15 +274,15 @@ class ServiceController extends GetxController {
           QuickAlert.show(
             context: Get.context!,
             type: QuickAlertType.success,
-            title: 'Deleted!',
-            text: 'Service deleted successfully',
+            title: 'Sukkses',
+            text: 'Layanan berhasil dihapus',
           );
         } catch (e) {
           QuickAlert.show(
             context: Get.context!,
             type: QuickAlertType.error,
-            title: 'Error',
-            text: 'Failed to delete service: $e',
+            title: 'Gagal',
+            text: 'Gagal menghapus layanan: $e',
           );
         } finally {
           isLoading.value = false;
@@ -296,7 +291,6 @@ class ServiceController extends GetxController {
     );
   }
 
-  /// ================= FORM HELPERS =================
   void editService(ServiceModel service) {
     nameController.text = service.name;
     descriptionController.text = service.description;
