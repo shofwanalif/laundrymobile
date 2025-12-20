@@ -14,13 +14,18 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    // Mendapatkan informasi ukuran layar
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isTablet = screenWidth > 600;
+
     return Consumer<ThemeService>(
       builder: (context, themeService, child) {
         return Scaffold(
           backgroundColor: _getBackgroundColor(context),
-          appBar: _buildAppBar(context, themeService),
-          body: _buildBody(context),
-          drawer: _buildDrawer(context),
+          // Menggunakan PreferredSize agar bisa mengatur tinggi AppBar secara dinamis
+          appBar: _buildAppBar(context, themeService, screenWidth),
+          body: _buildBody(context, screenWidth, isTablet),
+          drawer: _buildDrawer(context, screenWidth),
         );
       },
     );
@@ -32,329 +37,274 @@ class HomeView extends GetView<HomeController> {
         : AppColors.background;
   }
 
-  AppBar _buildAppBar(BuildContext context, ThemeService themeService) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, ThemeService themeService, double screenWidth) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return AppBar(
-      title: Text(
-        'Layanan Laundry',
-        style: TextStyle(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? AppColors.darkTextPrimary
-              : AppColors.textPrimary,
-          fontWeight: FontWeight.w600,
+      centerTitle: false,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Layanan Laundry',
+            style: TextStyle(
+              color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: screenWidth * 0.05, 
+            ),
+          ),
+          Text(
+            'Bersih, Wangi, Cepat',
+            style: TextStyle(
+              color: (isDark ? AppColors.darkTextSecondary : AppColors.textSecondary).withValues(alpha: 0.7),
+              fontSize: screenWidth * 0.03,
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.transparent, 
+      elevation: 0,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: isDark ? null : LinearGradient(
+            colors: [AppColors.primary.withValues(alpha: 0.1), Colors.transparent],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
       ),
-      backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? AppColors.primaryDark
-          : AppColors.primaryLight,
-      elevation: 0.5,
       actions: [
-        IconButton(
-          icon: Icon(
-            themeService.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.darkTextPrimary
-                : AppColors.textPrimary,
-          ),
+        _buildActionIcon(
+          icon: themeService.isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
           onPressed: () => themeService.toggleTheme(),
+          context: context,
         ),
-        Obx(
-          () => IconButton(
-            icon: controller.isLoading.value
-                ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.textPrimary,
-                    ),
-                  )
-                : Icon(
-                    Icons.refresh,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? AppColors.darkTextPrimary
-                        : AppColors.textPrimary,
-                  ),
-            onPressed: controller.isLoading.value
-                ? null
-                : controller.refreshData,
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.directions, color: Colors.greenAccent),
-          tooltip: 'Ayo rute kami!',
-          onPressed: () {
-            controller.goToLocation();
-          },
-        ),
+        Obx(() => _buildActionIcon(
+          icon: controller.isLoading.value ? Icons.hourglass_empty : Icons.refresh_rounded,
+          onPressed: controller.isLoading.value ? null : controller.refreshData,
+          context: context,
+          isLoading: controller.isLoading.value,
+        )),
+        const SizedBox(width: 8),
       ],
     );
   }
 
-  Widget _buildDrawer(BuildContext context) {
+  Widget _buildActionIcon({
+    required IconData icon, 
+    required VoidCallback? onPressed, 
+    required BuildContext context,
+    bool isLoading = false,
+    Color? iconColor,
+  }) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurfaceVariant : AppColors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          )
+        ],
+      ),
+      child: IconButton(
+        icon: isLoading 
+          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+          : Icon(icon, color: iconColor ?? (isDark ? AppColors.darkTextPrimary : AppColors.textPrimary), size: 20),
+        onPressed: onPressed,
+      ),
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context, double screenWidth) {
     return Drawer(
-      child: Column(
-        children: [
-          // Drawer Header
-          UserAccountsDrawerHeader(
-            accountName: Text(
-              'User',
-              style: TextStyle(
-                color: AppColors.white,
-                fontWeight: FontWeight.bold,
+      width: screenWidth * 0.8, // Responsif: 80% dari lebar layar
+      child: Container(
+        color: Theme.of(context).brightness == Brightness.dark 
+            ? AppColors.darkBackground 
+            : AppColors.background,
+        child: Column(
+          children: [
+            _buildCustomDrawerHeader(context),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  _drawerItem(Icons.home_rounded, 'Beranda', () => Get.back(), AppColors.primary),
+                  _drawerItem(Icons.shopping_bag_rounded, 'Laundry Saya', () {
+                    Get.back();
+                    controller.goToMyOrders();
+                  }, AppColors.primary),
+                  _drawerItem(Icons.history_rounded, 'Riwayat Pesanan', () {
+                    Get.back();
+                    controller.goToOrderHistory();
+                  }, AppColors.primary),
+                   _drawerItem(Icons.location_on, 'Alamat Saya', () {
+                    Get.back();
+                    controller.goToAddress();
+                  }, AppColors.primary),
+                  const Divider(indent: 20, endIndent: 20),
+                  _drawerItem(Icons.settings_rounded, 'Pengaturan', () => Get.back(), AppColors.textSecondary),
+                  _drawerItem(Icons.logout_rounded, 'Keluar', () {
+                    Get.back();
+                    controller.logout();
+                  }, AppColors.error),
+                ],
               ),
             ),
-            accountEmail: Text(
-              controller.userEmail ?? 'user@example.com',
-              style: TextStyle(color: AppColors.white.withValues(alpha: 0.8)),
-            ),
-            currentAccountPicture: CircleAvatar(
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomDrawerHeader(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 20,
+        bottom: 20,
+        left: 20,
+        right: 20,
+      ),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: const BorderRadius.only(bottomRight: Radius.circular(32)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 35,
+            backgroundColor: AppColors.white.withValues(alpha: 0.2),
+            child: CircleAvatar(
+              radius: 30,
               backgroundColor: AppColors.white,
-              child: Icon(Icons.person, color: AppColors.primary, size: 40),
+              child: Icon(Icons.person_rounded, color: AppColors.primary, size: 35),
             ),
-            decoration: BoxDecoration(gradient: AppColors.primaryGradient),
           ),
-
-          // Menu Items
-          ListTile(
-            leading: Icon(Icons.home, color: AppColors.primary),
-            title: const Text('Beranda'),
-            onTap: () {
-              Get.back();
-            },
+          const SizedBox(height: 15),
+          Text(
+            'Halo, Pelanggan!',
+            style: TextStyle(color: AppColors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
-
-          ListTile(
-            leading: Icon(Icons.shopping_cart, color: AppColors.primary),
-            title: const Text('Laundry Saya'),
-            onTap: () {
-              Get.back();
-              Get.toNamed(Routes.MY_ORDERS);
-            },
-          ),
-
-          ListTile(
-            leading: Icon(Icons.history, color: AppColors.primary),
-            title: const Text('Riwayat'),
-            onTap: () {
-              Get.back();
-              Get.toNamed(Routes.ORDERS_HISTORY);
-            },
-          ),
-
-          ListTile(
-            leading: Icon(Icons.settings, color: AppColors.primary),
-            title: const Text('Pengaturan'),
-            onTap: () {
-              Get.back();
-              // Navigate to settings if needed
-            },
-          ),
-
-          const Divider(),
-
-          // Logout Button
-          ListTile(
-            leading: Icon(Icons.logout, color: AppColors.error),
-            title: const Text('Logout', style: TextStyle(color: Colors.red)),
-            onTap: () {
-              Get.back();
-              controller.logout();
-            },
+          Text(
+            controller.userEmail ?? 'user@example.com',
+            style: TextStyle(color: AppColors.white.withValues(alpha: 0.8), fontSize: 14),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _drawerItem(IconData icon, String title, VoidCallback onTap, Color color) {
+    return ListTile(
+      leading: Icon(icon, color: color),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+      onTap: onTap,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, double screenWidth, bool isTablet) {
     return GetX<HomeController>(
       builder: (controller) {
         return Column(
           children: [
-            // Offline Mode Indicator - Always check this condition
             if (controller.isOfflineMode.value)
               OfflineIndicator(onRetry: controller.refreshData),
-
-            // Main Content
-            Expanded(child: _buildContent(context)),
+            
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isTablet ? screenWidth * 0.1 : 16, // Padding lebih lebar di tablet
+                ),
+                child: _buildContent(context, screenWidth),
+              ),
+            ),
           ],
         );
       },
     );
   }
 
-  Widget _buildContent(BuildContext context) {
-    return GetX<HomeController>(
-      builder: (controller) {
-        // Jika sedang loading dan tidak ada data
-        if (controller.isLoading.value && controller.services.isEmpty) {
-          return _buildLoadingWidget();
-        }
+  Widget _buildContent(BuildContext context, double screenWidth) {
+    if (controller.isLoading.value && controller.services.isEmpty) {
+      return _buildLoadingWidget();
+    }
+    if (controller.hasError.value && controller.services.isEmpty) {
+      return _buildErrorWidget(context, screenWidth);
+    }
+    if (!controller.hasData && !controller.isLoading.value) {
+      return _buildEmptyWidget(context, screenWidth);
+    }
 
-        // Jika ada error dan tidak ada data cached
-        if (controller.hasError.value && controller.services.isEmpty) {
-          return _buildErrorWidget(context);
-        }
-
-        // Jika tidak ada data sama sekali
-        if (!controller.hasData && !controller.isLoading.value) {
-          return _buildEmptyWidget(context);
-        }
-
-        return ServiceList(onServiceTap: _onServiceTap);
-      },
+    return RefreshIndicator(
+      onRefresh: () => controller.refreshData(),
+      child: ServiceList(onServiceTap: _onServiceTap),
     );
   }
 
-  Widget _buildLoadingWidget() {
-    return const Center(
+  // State widgets (Error, Empty, Loading) sekarang menggunakan screenWidth untuk ukuran icon/font
+  Widget _buildErrorWidget(BuildContext context, double screenWidth) {
+    return Center(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Icon(Icons.cloud_off_rounded, size: screenWidth * 0.2, color: AppColors.error.withValues(alpha: 0.5)),
+            SizedBox(height: screenWidth * 0.05),
+            Text('Koneksi Terganggu', style: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Text(_getErrorMessage(controller.errorMessage.value), textAlign: TextAlign.center),
+            const SizedBox(height: 30),
+            ElevatedButton.icon(
+              onPressed: controller.refreshData,
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Coba Lagi'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyWidget(BuildContext context, double screenWidth) {
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text('Memuat layanan...'),
+          Icon(Icons.layers_clear_rounded, size: screenWidth * 0.2, color: AppColors.textTertiary),
+          const SizedBox(height: 20),
+          const Text('Belum ada layanan tersedia', style: TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
     );
   }
 
-  Widget _buildErrorWidget(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: AppColors.error),
-            const SizedBox(height: 16),
-            Text(
-              'Gagal Memuat Data',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                _getErrorMessage(controller.errorMessage.value),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.textSecondary,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: controller.refreshData,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
-                  child: const Text('Coba Lagi'),
-                ),
-                const SizedBox(width: 12),
-                OutlinedButton(
-                  onPressed: () => Get.back(),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
-                  child: const Text('Kembali'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyWidget(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.local_laundry_service,
-              size: 64,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.darkTextTertiary
-                  : AppColors.textTertiary,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Belum Ada Layanan',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Saat ini belum ada layanan laundry yang tersedia\nSilakan coba lagi nanti',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: controller.refreshData,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.white,
-              ),
-              child: const Text('Muat Ulang'),
-            ),
-          ],
-        ),
-      ),
+  Widget _buildLoadingWidget() {
+    return const Center(
+      child: CircularProgressIndicator.adaptive(), // Mengikuti style platform (iOS/Android)
     );
   }
 
   String _getErrorMessage(String error) {
     if (error.contains('connection') || error.contains('network')) {
-      return 'Koneksi internet terputus. Pastikan perangkat Anda terhubung ke internet dan coba lagi.';
-    } else if (error.contains('timeout')) {
-      return 'Server membutuhkan waktu terlalu lama untuk merespons. Silakan coba lagi.';
-    } else if (error.contains('Supabase') || error.contains('database')) {
-      return 'Terjadi masalah dengan server. Tim kami sedang memperbaiki. Silakan coba lagi nanti.';
-    } else {
-      return 'Terjadi kesalahan tak terduga: $error';
+      return 'Koneksi internet terputus. Pastikan perangkat Anda terhubung.';
     }
+    return 'Terjadi kesalahan sistem. Silakan muat ulang halaman.';
   }
 
   void _onServiceTap(ServiceModel service) {
-    Get.toNamed(
-      Routes.ORDER,
-      arguments: service,
-    );
+    Get.toNamed(Routes.ORDER, arguments: service);
   }
 }

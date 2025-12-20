@@ -2,138 +2,164 @@ import 'package:flutter/material.dart';
 import '../../../data/models/service_model.dart';
 import '../../../core/theme/app_colors.dart';
 
-class ServiceCard extends StatelessWidget {
+class HomeServiceCard extends StatelessWidget {
   final ServiceModel service;
   final VoidCallback? onTap;
 
-  const ServiceCard({
-    super.key,
-    required this.service,
-    this.onTap,
-  });
+  const HomeServiceCard({super.key, required this.service, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: isDark
-              ? AppColors.darkCardBorder
-              : AppColors.cardBorder,
-        ),
-      ),
-      elevation: 2,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// ================= HEADER =================
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      service.name,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.textPrimary,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  _buildPriceTag(context),
-                ],
-              ),
-              const SizedBox(height: 8),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool isSmallCard = constraints.maxWidth < 200;
 
-              /// ================= DESCRIPTION =================
-              Text(
-                service.description,
-                style: TextStyle(
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.textSecondary,
-                  fontSize: 14,
+        return Container(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurface : AppColors.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isDark ? AppColors.darkCardBorder : AppColors.cardBorder,
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadowColor.withValues(
+                  alpha: isDark ? 0.3 : 0.05,
                 ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-              const SizedBox(height: 12),
-
-              /// ================= FOOTER =================
-              _buildFooter(context),
             ],
           ),
-        ),
-      ),
-    );
-  }
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: InkWell(
+              onTap: onTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 1. Gambar dengan AspectRatio Tetap
+                  AspectRatio(aspectRatio: 1.8, child: _buildImageSection()),
 
-  /// ================= PRICE TAG =================
-  Widget _buildPriceTag(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        _formatPrice(service.pricePerKg),
-        style: const TextStyle(
-          color: AppColors.white,
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-        ),
-      ),
-    );
-  }
+                  // 2. Konten dibungkus Flexible agar tidak memaksa tinggi berlebih
+                  Flexible(
+                    child: Padding(
+                      padding: EdgeInsets.all(isSmallCard ? 10 : 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment
+                            .spaceBetween, // Jaga jarak atas & bawah
+                        children: [
+                          // Nama & Harga
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                service.name,
+                                style: TextStyle(
+                                  fontSize: isSmallCard ? 13 : 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.textPrimary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                _formatPrice(service.pricePerKg),
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ],
+                          ),
 
-  /// ================= FOOTER =================
-  Widget _buildFooter(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Row(
-      children: [
-        Icon(
-          Icons.access_time,
-          size: 14,
-          color: isDark
-              ? AppColors.darkTextTertiary
-              : AppColors.textTertiary,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          '${service.duration} • per Kg',
-          style: TextStyle(
-            fontSize: 12,
-            color: isDark
-                ? AppColors.darkTextTertiary
-                : AppColors.textTertiary,
+                          // Badge & Button
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildDurationBadge(),
+                              _buildOrderButton(),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 
-  /// ================= PRICE FORMAT =================
+  Widget _buildImageSection() {
+    return Container(
+      color: AppColors.primary.withValues(alpha: 0.05),
+      child: service.imageUrl != null && service.imageUrl!.isNotEmpty
+          ? Image.network(
+              service.imageUrl!,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => _buildPlaceholder(),
+            )
+          : _buildPlaceholder(),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return const Icon(
+      Icons.local_laundry_service_outlined,
+      color: AppColors.primary,
+      size: 30,
+    );
+  }
+
+  Widget _buildDurationBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.timer_outlined, size: 10, color: AppColors.primary),
+          const SizedBox(width: 3),
+          Text(
+            service.duration,
+            style: const TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrderButton() {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: const BoxDecoration(
+        color: AppColors.primary,
+        shape: BoxShape.circle,
+      ),
+      child: const Icon(Icons.add_rounded, size: 16, color: Colors.white),
+    );
+  }
+
   String _formatPrice(int price) {
-    if (price >= 1000) {
-      final priceInK = price / 1000;
-      return 'Rp ${priceInK.toStringAsFixed(
-        price % 1000 == 0 ? 0 : 1,
-      )}k';
-    }
-    return 'Rp $price';
+    return 'Rp ${price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}';
   }
 }

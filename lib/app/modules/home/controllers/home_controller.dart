@@ -169,8 +169,16 @@ class HomeController extends GetxController {
     }
   }
 
-  void goToLocation() {
-    Get.toNamed(Routes.LOCATION);
+  void goToOrderHistory() {
+    Get.toNamed(Routes.ORDERS_HISTORY);
+  }
+
+  void goToMyOrders() {
+    Get.toNamed(Routes.MY_ORDERS);
+  }
+
+  void goToAddress() {
+    Get.toNamed(Routes.ADDRESS);
   }
 
   // Getters
