@@ -41,48 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDl2T3yPoT_N7tKs7PggMMwqR7aqNUpGaA',
-    appId: '1:561748156690:web:3fba0fe215c03b324313cb',
-    messagingSenderId: '561748156690',
-    projectId: 'mobilelaundry-2f460',
-    authDomain: 'mobilelaundry-2f460.firebaseapp.com',
-    storageBucket: 'mobilelaundry-2f460.firebasestorage.app',
-    measurementId: 'G-PD5MJ48CHF',
+    apiKey: 'AIzaSyCkptHgIvNuWyqyj4xeR08D4898b1laavQ',
+    appId: '1:984071798598:web:2738ee0c2b9f530311ef47',
+    messagingSenderId: '984071798598',
+    projectId: 'cemerlaund',
+    authDomain: 'cemerlaund.firebaseapp.com',
+    storageBucket: 'cemerlaund.firebasestorage.app',
+    measurementId: 'G-XPMSJERCRN',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCmb1Zt7iTU3diO0Mmn_RRj85LRdnfv4mU',
-    appId: '1:561748156690:android:005cce42cd137ccb4313cb',
-    messagingSenderId: '561748156690',
-    projectId: 'mobilelaundry-2f460',
-    storageBucket: 'mobilelaundry-2f460.firebasestorage.app',
+    apiKey: 'AIzaSyAFlB4LFXuICgbxfkaHnY87lzzJZD5muEc',
+    appId: '1:984071798598:android:70618bfa805e0b9e11ef47',
+    messagingSenderId: '984071798598',
+    projectId: 'cemerlaund',
+    storageBucket: 'cemerlaund.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB53dDtY_VP5K1lGI36zl3EdwMhc_Ox0Yk',
-    appId: '1:561748156690:ios:32fa0734f07deebc4313cb',
-    messagingSenderId: '561748156690',
-    projectId: 'mobilelaundry-2f460',
-    storageBucket: 'mobilelaundry-2f460.firebasestorage.app',
+    apiKey: 'AIzaSyBBv9v4D14yZCcSuFESDWFV_na3wvyn9D4',
+    appId: '1:984071798598:ios:4f724a7650c737bb11ef47',
+    messagingSenderId: '984071798598',
+    projectId: 'cemerlaund',
+    storageBucket: 'cemerlaund.firebasestorage.app',
     iosBundleId: 'com.example.laundrymobile',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB53dDtY_VP5K1lGI36zl3EdwMhc_Ox0Yk',
-    appId: '1:561748156690:ios:32fa0734f07deebc4313cb',
-    messagingSenderId: '561748156690',
-    projectId: 'mobilelaundry-2f460',
-    storageBucket: 'mobilelaundry-2f460.firebasestorage.app',
+    apiKey: 'AIzaSyBBv9v4D14yZCcSuFESDWFV_na3wvyn9D4',
+    appId: '1:984071798598:ios:4f724a7650c737bb11ef47',
+    messagingSenderId: '984071798598',
+    projectId: 'cemerlaund',
+    storageBucket: 'cemerlaund.firebasestorage.app',
     iosBundleId: 'com.example.laundrymobile',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyDl2T3yPoT_N7tKs7PggMMwqR7aqNUpGaA',
-    appId: '1:561748156690:web:c7a3929dc63cac9a4313cb',
-    messagingSenderId: '561748156690',
-    projectId: 'mobilelaundry-2f460',
-    authDomain: 'mobilelaundry-2f460.firebaseapp.com',
-    storageBucket: 'mobilelaundry-2f460.firebasestorage.app',
-    measurementId: 'G-BJ2Z08GTE7',
+    apiKey: 'AIzaSyCkptHgIvNuWyqyj4xeR08D4898b1laavQ',
+    appId: '1:984071798598:web:168307dba851e0ab11ef47',
+    messagingSenderId: '984071798598',
+    projectId: 'cemerlaund',
+    authDomain: 'cemerlaund.firebaseapp.com',
+    storageBucket: 'cemerlaund.firebasestorage.app',
+    measurementId: 'G-9FE0QE67LX',
   );
+
 }
