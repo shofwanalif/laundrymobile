@@ -183,12 +183,10 @@ class AdminDashboardView extends GetView<AdminController> {
 
             CardList(
               text: "Manage Order",
-              description: "Manage all Order",
+              description: "Kelola semua pesanan",
               icon: Icons.shopping_cart,
               iconColor: Colors.blue,
-              onPressed: () {
-                Get.snackbar("Info", "Manage Order");
-              },
+              onPressed: () => Get.toNamed(Routes.ORDERS_ADMIN),
             ),
 
             const SizedBox(height: 16),

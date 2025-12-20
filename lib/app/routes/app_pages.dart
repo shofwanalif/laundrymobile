@@ -19,6 +19,8 @@ import '../../middleware/auth_middleware.dart';
 import '../../middleware/role_check_middleware.dart';
 import '../modules/admin/bindings/services_binding.dart';
 import '../modules/admin/views/service_list_view.dart';
+import '../modules/admin/bindings/admin_order_binding.dart';
+import '../modules/admin/views/manage_orders.dart';
 import '../modules/add_address/bindings/add_address_binding.dart';
 import '../modules/add_address/views/add_address_view.dart';
 
@@ -83,6 +85,13 @@ class AppPages {
       name: _Paths.SERVICES_ADMIN,
       page: () => const ServicesListView(),
       binding: ServicesBinding(),
+      middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
+    ),
+
+    GetPage(
+      name: _Paths.ORDERS_ADMIN,
+      page: () => const ManageOrdersView(),
+      binding: AdminOrderBinding(),
       middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
     ),
 

@@ -18,28 +18,6 @@ class OrderProvider extends GetxService {
 
   /// 🔄 ORDER BERJALAN (user)
   Future<List<Map<String, dynamic>>> getActiveOrders(String userId) async {
-  try {
-    final response = await _supabase
-        .from('orders')
-        .select('*, services(*)')
-        .eq('user_id', userId)
-        .filter(
-          'status',
-          'not.in',
-          '(${OrderStatus.historyStatuses.join(',')})',
-        )
-        .order('created_at', ascending: false);
-
-    return List<Map<String, dynamic>>.from(response);
-  } catch (e) {
-    throw Exception('Fetch active orders failed: $e');
-  }
-}
-
-
-
-  /// 📜 RIWAYAT ORDER (user)
- Future<List<Map<String, dynamic>>> getOrderHistory(String userId) async {
     try {
       final response = await _supabase
           .from('orders')
@@ -47,9 +25,25 @@ class OrderProvider extends GetxService {
           .eq('user_id', userId)
           .filter(
             'status',
-            'in',
+            'not.in',
             '(${OrderStatus.historyStatuses.join(',')})',
           )
+          .order('created_at', ascending: false);
+
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      throw Exception('Fetch active orders failed: $e');
+    }
+  }
+
+  /// 📜 RIWAYAT ORDER (user)
+  Future<List<Map<String, dynamic>>> getOrderHistory(String userId) async {
+    try {
+      final response = await _supabase
+          .from('orders')
+          .select('*, services(*)')
+          .eq('user_id', userId)
+          .filter('status', 'in', '(${OrderStatus.historyStatuses.join(',')})')
           .order('created_at', ascending: false);
 
       return List<Map<String, dynamic>>.from(response);
@@ -58,9 +52,102 @@ class OrderProvider extends GetxService {
     }
   }
 
+  // Admin
 
+  /// GET ALL ORDERS (admin)
+  Future<List<Map<String, dynamic>>> getAllOrders() async {
+    try {
+      final response = await _supabase
+          .from('orders')
+          .select('*, services(*)')
+          .order('created_at', ascending: false);
 
-  // ===================== ADMIN =====================
+      // Fetch user profiles for each order
+      final orders = List<Map<String, dynamic>>.from(response);
+      for (int i = 0; i < orders.length; i++) {
+        final userId = orders[i]['user_id'];
+        if (userId != null) {
+          try {
+            final profile = await _supabase
+                .from('profiles')
+                .select('name, phone')
+                .eq('id', userId)
+                .maybeSingle();
+            orders[i]['profiles'] = profile;
+          } catch (_) {
+            orders[i]['profiles'] = null;
+          }
+        }
+      }
+      return orders;
+    } catch (e) {
+      throw Exception('Fetch all orders failed: $e');
+    }
+  }
+
+  /// GET ORDERS BY STATUS (admin)
+  Future<List<Map<String, dynamic>>> getOrdersByStatus(String status) async {
+    try {
+      final response = await _supabase
+          .from('orders')
+          .select('*, services(*)')
+          .eq('status', status)
+          .order('created_at', ascending: false);
+
+      // Fetch user profiles for each order
+      final orders = List<Map<String, dynamic>>.from(response);
+      for (int i = 0; i < orders.length; i++) {
+        final userId = orders[i]['user_id'];
+        if (userId != null) {
+          try {
+            final profile = await _supabase
+                .from('profiles')
+                .select('name, phone')
+                .eq('id', userId)
+                .maybeSingle();
+            orders[i]['profiles'] = profile;
+          } catch (_) {
+            orders[i]['profiles'] = null;
+          }
+        }
+      }
+      return orders;
+    } catch (e) {
+      throw Exception('Fetch orders by status failed: $e');
+    }
+  }
+
+  /// GET HISTORY ORDERS (admin) - picked_up & cancelled
+  Future<List<Map<String, dynamic>>> getHistoryOrders() async {
+    try {
+      final response = await _supabase
+          .from('orders')
+          .select('*, services(*)')
+          .filter('status', 'in', '(${OrderStatus.historyStatuses.join(',')})')
+          .order('created_at', ascending: false);
+
+      // Fetch user profiles for each order
+      final orders = List<Map<String, dynamic>>.from(response);
+      for (int i = 0; i < orders.length; i++) {
+        final userId = orders[i]['user_id'];
+        if (userId != null) {
+          try {
+            final profile = await _supabase
+                .from('profiles')
+                .select('name, phone')
+                .eq('id', userId)
+                .maybeSingle();
+            orders[i]['profiles'] = profile;
+          } catch (_) {
+            orders[i]['profiles'] = null;
+          }
+        }
+      }
+      return orders;
+    } catch (e) {
+      throw Exception('Fetch history orders failed: $e');
+    }
+  }
 
   /// UPDATE STATUS ORDER (admin)
   Future<void> updateOrderStatus({
@@ -85,7 +172,6 @@ class OrderProvider extends GetxService {
     }
   }
 
-
   /// UPDATE PRICE (admin, jika berat berubah)
   Future<void> updateOrderPrice({
     required String orderId,
@@ -106,14 +192,9 @@ class OrderProvider extends GetxService {
     }
   }
 
-  /// ❌ DELETE ORDER (admin)
   Future<void> deleteOrder(String orderId) async {
-    await updateOrderStatus(
-      orderId: orderId,
-      status: OrderStatus.cancelled,
-    );
+    await updateOrderStatus(orderId: orderId, status: OrderStatus.cancelled);
   }
-
 
   // ===================== SHARED =====================
 
