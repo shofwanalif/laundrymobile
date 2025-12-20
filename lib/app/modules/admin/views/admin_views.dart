@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../controllers/admin_controller.dart';
 import '../../../../app/modules/auth/controllers/auth_controller.dart';
 import '../../../routes/app_pages.dart';
-import '../../../data/services/notification_handler.dart';
 import '../widgets/card_list.dart';
 import '../widgets/dashboard_card.dart';
 
@@ -12,8 +11,6 @@ class AdminDashboardView extends GetView<AdminController> {
 
   @override
   Widget build(BuildContext context) {
-    final notificationHandler = NotificationHandler();
-
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -28,68 +25,61 @@ class AdminDashboardView extends GetView<AdminController> {
         ),
         elevation: 0,
         actions: [
-          Obx(
-            () => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  PopupMenuButton<String>(
-                    offset: const Offset(0, 45),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    onSelected: (value) {
-                      if (value == 'logout') {
-                        Get.find<AuthController>().logout();
-                      }
-                    },
-                    itemBuilder: (context) => [
-                      PopupMenuItem<String>(
-                        enabled: false,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              controller.userName.value,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              controller.userEmail,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: PopupMenuButton<String>(
+              offset: const Offset(0, 45),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              onSelected: (value) {
+                if (value == 'logout') {
+                  Get.find<AuthController>().logout();
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem<String>(
+                  enabled: false,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(
+                        () => Text(
+                          controller.userName.value,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
-                      const PopupMenuDivider(),
-                      const PopupMenuItem<String>(
-                        value: 'logout',
-                        child: Row(
-                          children: [
-                            Icon(Icons.logout, color: Colors.red, size: 20),
-                            SizedBox(width: 10),
-                            Text('Logout', style: TextStyle(color: Colors.red)),
-                          ],
-                        ),
+                      const SizedBox(height: 4),
+                      Text(
+                        controller.userEmail,
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ],
-                    child: const CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.lightBlueAccent,
-                        size: 20,
-                      ),
-                    ),
                   ),
-                ],
+                ),
+                const PopupMenuDivider(),
+                const PopupMenuItem<String>(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, color: Colors.red, size: 20),
+                      SizedBox(width: 10),
+                      Text('Logout', style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                ),
+              ],
+              child: const CircleAvatar(
+                radius: 18,
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.person,
+                  color: Colors.lightBlueAccent,
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -175,7 +165,7 @@ class AdminDashboardView extends GetView<AdminController> {
               icon: Icons.person,
               iconColor: Colors.blue,
               onPressed: () {
-                Get.snackbar("Info", "Manage Customer");
+                Get.toNamed(Routes.CUSTOMERS_ADMIN);
               },
             ),
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:laundrymobile/app/data/providers/address_provider.dart';
+import 'package:laundrymobile/app/data/providers/customer_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:laundrymobile/app/data/providers/auth_provider.dart';
 import 'package:laundrymobile/app/data/providers/service_provider.dart';
@@ -34,6 +35,7 @@ Future<void> main() async {
 
     Get.put(ServicesProvider());
     Get.put(AddressProvider());
+    Get.put(CustomerProvider());
     Get.put(AuthProvider());
     Get.put(AuthController());
 
