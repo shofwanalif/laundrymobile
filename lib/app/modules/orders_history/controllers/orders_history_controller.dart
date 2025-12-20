@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:laundrymobile/app/data/models/address_model.dart';
+import 'package:laundrymobile/app/data/providers/address_provider.dart';
 import '../../../data/providers/order_provider.dart';
 import '../../../data/providers/auth_provider.dart';
 import '../../../data/models/order_model.dart';
@@ -6,8 +8,11 @@ import '../../../data/models/order_model.dart';
 class OrdersHistoryController extends GetxController {
   final OrderProvider _orderProvider = Get.find();
   final AuthProvider _authProvider = Get.find();
+  final AddressProvider _addressProvider = Get.find();
 
   final orders = <OrderModel>[].obs;
+  final addresses = <AddressModel>[].obs;
+
   final isLoading = false.obs;
   final hasError = false.obs;
   final errorMessage = ''.obs;
@@ -24,25 +29,41 @@ class OrdersHistoryController extends GetxController {
       return;
     }
 
-    fetchOrderHistory();
+    refreshData();
   }
 
-  Future<void> fetchOrderHistory() async {
+  Future<void> refreshData() async {
+    if (userId == null) {
+      hasError.value = true;
+      errorMessage.value = 'User belum login';
+      return;
+    }
+
     try {
       isLoading.value = true;
       hasError.value = false;
 
-      final response = await _orderProvider.getOrderHistory(userId!);
+      final results = await Future.wait([
+        _orderProvider.getActiveOrders(userId!),
+        _addressProvider.getUserAddresses(userId!),
+      ]);
 
+      final List<dynamic> orderResponse = results[0];
       orders.assignAll(
-        response.map((e) => OrderModel.fromMap(e)).toList(),
+        orderResponse.map((e) => OrderModel.fromMap(e)).toList(),
       );
+
+      final List<AddressModel> addressResponse =
+          results[1] as List<AddressModel>;
+      addresses.assignAll(addressResponse);
     } catch (e) {
       hasError.value = true;
-      errorMessage.value = 'Gagal memuat pesanan';
-      print(e);
+      errorMessage.value = 'Gagal memuat data pesanan';
+      print('Error MyOrdersController: $e');
     } finally {
       isLoading.value = false;
     }
   }
+
+  Future<void> fetchActiveOrders() => refreshData();
 }
