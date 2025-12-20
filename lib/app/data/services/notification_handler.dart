@@ -147,13 +147,25 @@ class NotificationHandler {
       final user = _supabaseService.client.auth.currentUser;
       if (user == null) return;
 
+      // Tambahkan pengecekan Role 
+      final profile = await _supabaseService.client
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+      if (profile['role'] == 'admin') {
+        print('ℹ️ User adalah admin, token tidak akan disimpan');
+        return; 
+      }
+
       String? token = await _firebaseMessaging.getToken();
       if (token != null) {
         await _supabaseService.client
             .from('profiles')
             .update({'fcm_token': token})
             .eq('id', user.id);
-        print('✅ FCM Token Synced');
+        print('✅ Customer FCM Token Synced');
       }
     } catch (e) {
       print('❌ Sync Token Error: $e');
