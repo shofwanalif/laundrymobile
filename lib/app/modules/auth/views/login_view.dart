@@ -115,7 +115,7 @@ class _LoginViewState extends State<LoginView> {
                                 }
                               },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.orangePrimary,
+                          backgroundColor: AppColors.bluePrimary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -156,7 +156,7 @@ class _LoginViewState extends State<LoginView> {
                             : controller.goToRegister,
                         child: const Text(
                           AppStrings.register,
-                          style: TextStyle(color: AppColors.orangePrimary),
+                          style: TextStyle(color: AppColors.bluePrimary),
                         ),
                       ),
                     ],

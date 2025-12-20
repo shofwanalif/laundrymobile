@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 
 part 'order_model.g.dart';
 
@@ -101,5 +102,14 @@ class OrderModel extends HiveObject {
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+}
+
+extension OrderModelX on OrderModel {
+  String get formattedCreatedAt {
+    return DateFormat(
+      'dd MMM yyyy, HH:mm',
+      'id_ID',
+    ).format(createdAt);
   }
 }

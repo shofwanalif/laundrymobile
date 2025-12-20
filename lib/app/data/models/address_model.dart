@@ -1,39 +1,47 @@
-import 'package:hive/hive.dart';
+class AddressModel {
+  final String id;
+  final String userId;
 
-part 'address_model.g.dart';
+  /// Nama alamat (Rumah, Kantor, Kost, dll)
+  final String label;
 
-@HiveType(typeId: 1)
-class AddressModel extends HiveObject {
-  @HiveField(0)
-  String id;
+  /// Alamat lengkap
+  final String address;
 
-  @HiveField(1)
-  String userId;
-
-  @HiveField(2)
-  String label;
-
-  @HiveField(3)
-  String address;
-
-  @HiveField(4)
-  bool isDefault;
+  final double? latitude;
+  final double? longitude;
 
   AddressModel({
     required this.id,
     required this.userId,
     required this.label,
     required this.address,
-    required this.isDefault,
+    this.latitude,
+    this.longitude,
   });
 
   factory AddressModel.fromMap(Map<String, dynamic> map) {
     return AddressModel(
-      id: map['id'],
-      userId: map['user_id'],
-      label: map['label'] ?? '',
-      address: map['address'],
-      isDefault: map['is_default'] ?? false,
+      id: map['id'].toString(),
+      userId: map['user_id'].toString(),
+      label: map['label'] ?? '',               
+      address: map['address'] ?? '',
+      latitude: map['latitude'] != null
+          ? (map['latitude'] as num).toDouble()
+          : null,
+      longitude: map['longitude'] != null
+          ? (map['longitude'] as num).toDouble()
+          : null,
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'user_id': userId,
+      'label': label,
+      'address': address,
+      'latitude': latitude,
+      'longitude': longitude,
+    };
   }
 }

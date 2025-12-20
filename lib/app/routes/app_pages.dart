@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:laundrymobile/app/modules/address/bindings/address_binding.dart';
+import 'package:laundrymobile/app/modules/address/views/address_view.dart';
 
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/login_view.dart';
@@ -17,8 +19,8 @@ import '../../middleware/auth_middleware.dart';
 import '../../middleware/role_check_middleware.dart';
 import '../modules/admin/bindings/services_binding.dart';
 import '../modules/admin/views/service_list_view.dart';
-import '../modules/location/bindings/location_binding.dart';
-import '../modules/location/views/location_view.dart';
+import '../modules/add_address/bindings/add_address_binding.dart';
+import '../modules/add_address/views/add_address_view.dart';
 
 part 'app_routes.dart';
 
@@ -64,9 +66,16 @@ class AppPages {
     ),
 
     GetPage(
-      name: _Paths.LOCATION,
-      page: () => const LocationView(),
-      binding: LocationBinding(),
+      name: _Paths.ADDRESS,
+      page: () => const AddressView(),
+      binding: AddressBinding(),
+      middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
+    ),
+
+    GetPage(
+      name: _Paths.ADD_ADDRESS,
+      page: () => const AddAddressView(),
+      binding: AddAddressBinding(),
       middlewares: [AuthMiddleware(), RoleCheckMiddleware()],
     ),
 

@@ -8,112 +8,64 @@ import '../../../data/models/service_model.dart';
 class ServiceList extends GetView<HomeController> {
   final void Function(ServiceModel service)? onServiceTap;
 
-  const ServiceList({
-    super.key,
-    this.onServiceTap,
-  });
+  const ServiceList({super.key, this.onServiceTap});
 
-@override
-Widget build(BuildContext context) {
-  return Obx(() {
-    if (controller.isLoading.value && controller.services.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.isLoading.value && controller.services.isEmpty) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-    if (controller.hasError.value && controller.services.isEmpty) {
-      return _buildErrorWidget();
-    }
+      if (controller.hasError.value && controller.services.isEmpty) {
+        return _buildErrorWidget();
+      }
 
-    if (!controller.hasData) {
-      return _buildEmptyWidget();
-    }
+      if (controller.services.isEmpty) {
+        return _buildEmptyWidget();
+      }
 
-    return RefreshIndicator(
-      onRefresh: controller.refreshData,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: controller.services.length,
-        itemBuilder: (context, index) {
-          final service = controller.services[index];
-
-          return ServiceCard(
-            service: service,
-            onTap: () => onServiceTap?.call(service),
-          );
-        },
-      ),
-    );
-  });
-}
-
+      return RefreshIndicator(
+        onRefresh: controller.refreshData,
+        child: GridView.builder(
+          padding: const EdgeInsets.all(16),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.72, // Diubah agar kartu sedikit lebih tinggi
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: controller.services.length,
+          itemBuilder: (context, index) {
+            final service = controller.services[index];
+            return HomeServiceCard(
+              service: service,
+              onTap: () => onServiceTap?.call(service),
+            );
+          },
+        ),
+      );
+    });
+  }
 
   Widget _buildErrorWidget() {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: AppColors.error),
-            const SizedBox(height: 16),
-            Text('Gagal Memuat Data', style: Get.textTheme.headlineSmall),
-            const SizedBox(height: 8),
-            Text(
-              controller.errorMessage.value,
-              textAlign: TextAlign.center,
-              style: Get.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: controller.loadServices,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.white,
-              ),
-              child: const Text('Coba Lagi'),
-            ),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.cloud_off_rounded, size: 64, color: Colors.grey[400]),
+          const SizedBox(height: 16),
+          const Text("Gagal memuat data"),
+          TextButton(
+            onPressed: controller.loadServices,
+            child: const Text("Coba Lagi"),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildEmptyWidget() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.local_laundry_service,
-              size: 64,
-              color: AppColors.textTertiary,
-            ),
-            const SizedBox(height: 16),
-            Text('Belum Ada Layanan', style: Get.textTheme.headlineSmall),
-            const SizedBox(height: 8),
-            Text(
-              'Saat ini belum ada layanan laundry yang tersedia',
-              textAlign: TextAlign.center,
-              style: Get.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: controller.loadServices,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.white,
-              ),
-              child: const Text('Muat Ulang'),
-            ),
-          ],
-        ),
-      ),
-    );
+    return const Center(child: Text("Tidak ada layanan tersedia"));
   }
 }
