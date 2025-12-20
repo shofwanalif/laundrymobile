@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
-import '../../../core/app_strings.dart';
+import '../../../widgets/common/input_field.dart';
+import '../../../widgets/common/button.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -12,17 +13,17 @@ class RegisterView extends StatefulWidget {
 
 class _RegisterViewState extends State<RegisterView> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _obscurePassword = true.obs;
-  final _obscureConfirmPassword = true.obs;
 
   @override
   void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -31,160 +32,115 @@ class _RegisterViewState extends State<RegisterView> {
     final controller = Get.find<AuthController>();
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Colors.grey[50],
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Form(
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // App Icon
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(
-                            context,
-                          ).colorScheme.primary.withValues(alpha: 0.7),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.primary.withValues(alpha: 0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.person_add,
-                      size: 50,
-                      color: Colors.white,
+                  const SizedBox(height: 40),
+
+                  // Logo
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Image.asset(
+                      'assets/logo/cemerlaund.png',
+                      height: 80,
                     ),
                   ),
                   const SizedBox(height: 32),
 
                   // Title
-                  Text(
-                    "Create Account",
-                    style: Theme.of(context).textTheme.displayMedium,
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Buat Akun Baru',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    AppStrings.registerToGetStarted,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 48),
-                  // Email Field
-                  Obx(
-                    () => TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.email,
-                        hintText: 'name@example.com',
-                        prefixIcon: Icon(Icons.email_outlined),
-                      ),
-                      validator: controller.validateEmail,
-                      enabled: !controller.isLoading.value,
+
+                  // Subtitle
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Akses penuh ke semua fitur dan layanan kami',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Name Input
+                  EmailInputFb1(
+                    inputController: _nameController,
+                    label: 'Nama',
+                    hintText: 'Masukkan nama lengkap',
+                    prefixIcon: Icons.person_outline,
                   ),
                   const SizedBox(height: 16),
 
-                  // Password Field
-                  Obx(
-                    () => TextFormField(
-                      controller: _passwordController,
-                      obscureText: _obscurePassword.value,
-                      decoration: InputDecoration(
-                        labelText: AppStrings.password,
-                        hintText: '••••••••',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword.value
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                          ),
-                          onPressed: () =>
-                              _obscurePassword.value = !_obscurePassword.value,
-                        ),
-                      ),
-                      validator: controller.validatePassword,
-                      enabled: !controller.isLoading.value,
-                    ),
+                  // Phone Input
+                  EmailInputFb1(
+                    inputController: _phoneController,
+                    label: 'No. Telepon',
+                    hintText: 'Masukkan nomor telepon',
+                    keyboardType: TextInputType.phone,
+                    prefixIcon: Icons.phone_outlined,
                   ),
                   const SizedBox(height: 16),
 
-                  // Confirm Password Field
-                  Obx(
-                    () => TextFormField(
-                      controller: _confirmPasswordController,
-                      obscureText: _obscureConfirmPassword.value,
-                      decoration: InputDecoration(
-                        labelText: AppStrings.confirmPassword,
-                        hintText: '••••••••',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureConfirmPassword.value
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                          ),
-                          onPressed: () => _obscureConfirmPassword.value =
-                              !_obscureConfirmPassword.value,
-                        ),
-                      ),
-                      validator: (value) => controller.validateConfirmPassword(
-                        value,
-                        _passwordController.text,
-                      ),
-                      enabled: !controller.isLoading.value,
-                    ),
+                  // Email Input
+                  EmailInputFb1(
+                    inputController: _emailController,
+                    label: 'Email',
+                    hintText: 'Masukkan email',
+                    keyboardType: TextInputType.emailAddress,
+                    prefixIcon: Icons.email_outlined,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Password Input
+                  EmailInputFb1(
+                    inputController: _passwordController,
+                    label: 'Password',
+                    hintText: 'Masukkan password',
+                    obscureText: true,
+                    prefixIcon: Icons.lock_outline,
                   ),
                   const SizedBox(height: 32),
 
                   // Register Button
                   Obx(
-                    () => SizedBox(
-                      width: double.infinity,
-                      height: 56,
-                      child: ElevatedButton(
-                        onPressed: controller.isLoading.value
-                            ? null
-                            : () {
-                                if (_formKey.currentState!.validate()) {
-                                  controller.register(
-                                    _emailController.text,
-                                    _passwordController.text,
-                                  );
-                                }
-                              },
-                        child: controller.isLoading.value
-                            ? const SizedBox(
-                                height: 24,
-                                width: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
-                                  ),
-                                ),
-                              )
-                            : const Text(AppStrings.register),
-                      ),
-                    ),
+                    () => controller.isLoading.value
+                        ? const Center(child: CircularProgressIndicator())
+                        : Button(
+                            text: 'Daftar',
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                controller.register(
+                                  _emailController.text,
+                                  _passwordController.text,
+                                  name: _nameController.text,
+                                  phone: _phoneController.text,
+                                );
+                              }
+                            },
+                            width: double.infinity,
+                            height: 50,
+                            gradientColors: const [
+                              Color(0xFF0072E5),
+                              Color(0xFF75D8FC),
+                            ],
+                            borderRadius: 12,
+                          ),
                   ),
                   const SizedBox(height: 24),
 
@@ -193,17 +149,27 @@ class _RegisterViewState extends State<RegisterView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        AppStrings.alreadyHaveAccount,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        "Sudah punya akun? ",
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
-                      TextButton(
-                        onPressed: controller.isLoading.value
-                            ? null
-                            : controller.goToLogin,
-                        child: const Text(AppStrings.login),
+                      Obx(
+                        () => GestureDetector(
+                          onTap: controller.isLoading.value
+                              ? null
+                              : controller.goToLogin,
+                          child: const Text(
+                            'Masuk',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0072E5),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),

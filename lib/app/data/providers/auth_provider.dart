@@ -47,12 +47,28 @@ class AuthProvider extends GetxService {
   }
 
   // Register
-  Future<AuthResponse> register(String email, String password) async {
+  Future<AuthResponse> register(
+    String email,
+    String password, {
+    required String name,
+    String? phone,
+  }) async {
     try {
       final response = await _supabaseService.client.auth.signUp(
         email: email,
         password: password,
       );
+
+      // Save profile data to profiles table
+      if (response.user != null) {
+        await _supabaseService.client.from('profiles').upsert({
+          'id': response.user!.id,
+          'name': name,
+          'phone': phone ?? '',
+          'role': 'user',
+        });
+      }
+
       debugPrint('Registration successful');
       return response;
     } catch (e) {

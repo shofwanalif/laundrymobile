@@ -79,13 +79,23 @@ class AuthController extends GetxController {
   }
 
   //Register
-  Future<void> register(String email, String password) async {
+  Future<void> register(
+    String email,
+    String password, {
+    required String name,
+    String? phone,
+  }) async {
     isLoading.value = true;
     try {
-      await _authProvider.register(email.trim(), password);
+      await _authProvider.register(
+        email.trim(),
+        password,
+        name: name.trim(),
+        phone: phone?.trim(),
+      );
       Get.snackbar(
-        'Succes!',
-        AppStrings.registerSuccess,
+        'Sukses!',
+        'Pendaftaran berhasil. Silakan masuk.',
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
@@ -94,8 +104,8 @@ class AuthController extends GetxController {
       Get.until((route) => route.settings.name == Routes.LOGIN);
     } catch (e) {
       Get.snackbar(
-        'Error!',
-        '${AppStrings.registerFailed} : ${e.toString()}',
+        'Gagal!',
+        'Pendaftaran gagal: ${e.toString()}',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

@@ -6,6 +6,9 @@ class EmailInputFb1 extends StatelessWidget {
   final String? hintText;
   final TextInputType keyboardType;
   final bool obscureText;
+  final IconData? prefixIcon;
+  final Widget? suffixIcon;
+  final Color? prefixIconColor;
 
   const EmailInputFb1({
     Key? key,
@@ -14,6 +17,9 @@ class EmailInputFb1 extends StatelessWidget {
     this.hintText,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.prefixIconColor,
   }) : super(key: key);
 
   @override
@@ -52,9 +58,7 @@ class EmailInputFb1 extends StatelessWidget {
           child: TextField(
             controller: inputController,
             obscureText: obscureText,
-            onChanged: (value) {
-              //Do something wi
-            },
+            onChanged: (value) {},
             keyboardType: keyboardType,
             style: const TextStyle(fontSize: 14, color: Colors.black),
             decoration: InputDecoration(
@@ -62,6 +66,10 @@ class EmailInputFb1 extends StatelessWidget {
               fillColor: accentColor,
               hintText: hintText ?? 'Enter text',
               hintStyle: TextStyle(color: Colors.grey.withValues(alpha: .75)),
+              prefixIcon: prefixIcon != null
+                  ? Icon(prefixIcon, color: prefixIconColor ?? Colors.grey)
+                  : null,
+              suffixIcon: suffixIcon,
               contentPadding: const EdgeInsets.symmetric(
                 vertical: 0.0,
                 horizontal: 20.0,
