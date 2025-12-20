@@ -1,81 +1,79 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Base Orange Colors
-  static const Color orangePrimary = Color.fromARGB(255, 253, 127, 8);
-  static const Color orangeLight = Color.fromARGB(255, 223, 120, 10);
-  static const Color orangeDark = Color.fromARGB(255, 182, 92, 2);
+  // Base Blue Colors - Memberikan kesan air dan kebersihan
+  static const Color bluePrimary = Color(0xFF0077B6); // Biru Ocean yang solid
+  static const Color blueLight = Color(0xFF90E0EF);   // Biru muda transparan seperti air jernih
+  static const Color blueDark = Color(0xFF03045E);    // Biru Navy untuk kontras tinggi
 
   static const Color text = Color(0xFF1B1B1B);
   static const Color white = Colors.white;
 
-  // Primary Colors - Orange Theme
-  static const Color primary = orangePrimary;
-  static const Color primaryLight = orangeLight;
-  static const Color primaryDark = orangeDark;
+  // Primary Colors - Blue Theme
+  static const Color primary = bluePrimary;
+  static const Color primaryLight = blueLight;
+  static const Color primaryDark = blueDark;
 
-  // Secondary Colors - Complementary Orange/Accent
-  static const Color secondary = Color(0xFFFF9500); // lebih soft orange
-  static const Color accent = Color(0xFFFFC107); // gold-ish accent
+  // Secondary Colors - Menggunakan warna Cyan/Teal agar tetap senada dengan air
+  static const Color secondary = Color(0xFF00B4D8); 
+  static const Color accent = Color(0xFFCAF0F8); // Sangat muda, hampir seperti kristal air
 
   // Status Colors
-  static const Color success = Color(
-    0xFF34C759,
-  ); // tetap hijau untuk status sukses
-  static const Color error = Color(0xFFFF3B30); // tetap merah
-  static const Color warning = Color(0xFFFF9500); // orange untuk warning
-  static const Color info = orangePrimary; // info juga pakai orange
+  static const Color success = Color(0xFF2D6A4F); // Hijau botol (cocok dengan biru)
+  static const Color error = Color(0xFFE63946);   // Merah lembut
+  static const Color warning = Color(0xFFFFB703); // Kuning cerah
+  static const Color info = bluePrimary;
 
-  // Neutral Colors
-  static const Color background = Color(0xFFFDF6F0);
+  // Neutral Colors - Background dengan tint biru tipis agar terasa "dingin"
+  static const Color background = Color(0xFFF0F8FF); // Alice Blue
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceVariant = Color(0xFFFFF2EC);
-  static const Color inputFillColor = Color(0xFFFFFAF5);
+  static const Color surfaceVariant = Color(0xFFE1F5FE);
+  static const Color inputFillColor = Color(0xFFF8FDFF);
 
   // Text Colors
-  static const Color textPrimary = Color(0xFF000000);
-  static const Color textSecondary = Color(0xFF8E8E93);
-  static const Color textTertiary = Color(0xFFC7C7CC);
+  static const Color textPrimary = Color(0xFF023E8A); // Teks utama biru sangat tua (lebih modern dari hitam)
+  static const Color textSecondary = Color(0xFF64748B);
+  static const Color textTertiary = Color(0xFF94A3B8);
 
   // Separator
-  static const Color separator = Color(0xFFE5D8CC);
-  static const Color separatorLight = Color(0xFFFFEDE3);
+  static const Color separator = Color(0xFFD1E9F6);
+  static const Color separatorLight = Color(0xFFE3F2FD);
 
   // Card & Container
   static const Color cardBackground = Color(0xFFFFFFFF);
-  static const Color cardBorder = Color(0xFFFFE5D1);
+  static const Color cardBorder = Color(0xFFBEE3F8);
 
-  // Gradient Colors
+  // Gradient Colors - Efek gradasi air yang segar
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [orangePrimary, orangeLight],
+    colors: [bluePrimary, Color(0xFF00B4D8)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient secondaryGradient = LinearGradient(
-    colors: [secondary, accent],
+    colors: [Color(0xFF48CAE4), Color(0xFFADE8F4)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   // Shadow
-  static const Color shadowColor = Color(0x1A000000);
+  static const Color shadowColor = Color(0x1A023E8A); // Shadow dengan tint biru
 
-  // Dark Theme Colors
-  static const Color darkBackground = Color(0xFF1C0F00);
-  static const Color darkSurface = Color(0xFF2A1A0D);
-  static const Color darkSurfaceVariant = Color(0xFF3A2414);
+  // Dark Theme Colors - Deep Sea Theme
+  static const Color darkBackground = Color(0xFF021024);
+  static const Color darkSurface = Color(0xFF05264E);
+  static const Color darkSurfaceVariant = Color(0xFF08335E);
 
   // Dark Theme Text Colors
-  static const Color darkTextPrimary = Color(0xFFFFFFFF);
-  static const Color darkTextSecondary = Color(0xFFBFBFBF);
-  static const Color darkTextTertiary = Color(0xFF8C8C8C);
+  static const Color darkTextPrimary = Color(0xFFE0FBFF);
+  static const Color darkTextSecondary = Color(0xFFB0C4DE);
+  static const Color darkTextTertiary = Color(0xFF778899);
 
   // Dark Theme Separator
-  static const Color darkSeparator = Color(0xFF5A3E2A);
-  static const Color darkSeparatorLight = Color(0xFF4A2E1A);
+  static const Color darkSeparator = Color(0xFF1E3A5F);
+  static const Color darkSeparatorLight = Color(0xFF2C5282);
 
   // Dark Theme Card & Container
-  static const Color darkCardBackground = Color(0xFF2A1A0D);
-  static const Color darkCardBorder = Color(0xFF5A3E2A);
+  static const Color darkCardBackground = Color(0xFF05264E);
+  static const Color darkCardBorder = Color(0xFF1E3A5F);
 }

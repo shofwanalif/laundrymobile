@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:laundrymobile/app/data/providers/address_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:laundrymobile/app/data/providers/auth_provider.dart';
 import 'package:laundrymobile/app/data/providers/service_provider.dart';
@@ -15,9 +16,12 @@ import 'package:laundrymobile/app/modules/auth/controllers/auth_controller.dart'
 import 'package:laundrymobile/app/data/models/service_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'app/data/services/notification_handler.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting('id_ID', null);
 
   await Firebase.initializeApp();
 
@@ -29,6 +33,7 @@ Future<void> main() async {
     await Get.putAsync(() => SupabaseService().init());
 
     Get.put(ServicesProvider());
+    Get.put(AddressProvider());
     Get.put(AuthProvider());
     Get.put(AuthController());
 
