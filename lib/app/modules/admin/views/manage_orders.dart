@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../controllers/admin_order_controller.dart';
 import '../widgets/order_card.dart';
+import '../../../widgets/common/button.dart';
 
 class ManageOrdersView extends GetView<AdminOrderController> {
   const ManageOrdersView({super.key});
@@ -209,7 +210,7 @@ class ManageOrdersView extends GetView<AdminOrderController> {
                     ),
                     decoration: BoxDecoration(
                       color: controller.getStatusColor(status),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       controller.getStatusLabel(status),
@@ -223,7 +224,6 @@ class ManageOrdersView extends GetView<AdminOrderController> {
                 ],
               ),
 
-              // Update Status Buttons
               if (nextStatuses.isNotEmpty) ...[
                 const SizedBox(height: 24),
                 const Text(
@@ -235,20 +235,13 @@ class ManageOrdersView extends GetView<AdminOrderController> {
                   spacing: 8,
                   runSpacing: 8,
                   children: nextStatuses.map((newStatus) {
-                    return ElevatedButton.icon(
+                    return StatusButton(
+                      text: controller.getStatusLabel(newStatus),
+                      backgroundColor: controller.getStatusColor(newStatus),
                       onPressed: () {
                         Get.back();
                         controller.updateOrderStatus(order['id'], newStatus);
                       },
-                      icon: Icon(controller.getStatusIcon(newStatus), size: 18),
-                      label: Text(controller.getStatusLabel(newStatus)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: controller.getStatusColor(newStatus),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
                     );
                   }).toList(),
                 ),

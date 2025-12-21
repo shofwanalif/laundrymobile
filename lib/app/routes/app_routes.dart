@@ -13,6 +13,7 @@ abstract class Routes {
   static const SERVICES_ADMIN = _Paths.SERVICES_ADMIN;
   static const ORDERS_ADMIN = _Paths.ORDERS_ADMIN;
   static const CUSTOMERS_ADMIN = _Paths.CUSTOMERS_ADMIN;
+  static const REPORTS_ADMIN = _Paths.REPORTS_ADMIN;
   static const ADDRESS = _Paths.ADDRESS;
   static const ADD_ADDRESS = _Paths.ADD_ADDRESS;
 }
@@ -29,6 +30,7 @@ abstract class _Paths {
   static const SERVICES_ADMIN = '/admin/services';
   static const ORDERS_ADMIN = '/admin/orders';
   static const CUSTOMERS_ADMIN = '/admin/customers';
+  static const REPORTS_ADMIN = '/admin/reports';
   static const ADDRESS = '/address';
   static const ADD_ADDRESS = '/add_address';
 }

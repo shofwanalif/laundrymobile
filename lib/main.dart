@@ -27,7 +27,6 @@ Future<void> main() async {
   await Firebase.initializeApp();
 
   try {
-    // Initialize Hive
     await Hive.initFlutter();
     Hive.registerAdapter(ServiceModelAdapter());
 
@@ -39,17 +38,14 @@ Future<void> main() async {
     Get.put(AuthProvider());
     Get.put(AuthController());
 
-    // Initialize LocalStorageService SEBELUM NotificationProvider
     await Get.putAsync(() => LocalStorageService().init());
 
     final notificationHandler = Get.put(NotificationHandler());
     await notificationHandler.initPushNotification();
     await notificationHandler.initLocalNotification();
 
-    // Initialize HiveService
     await Get.putAsync(() => HiveService().init());
 
-    // Initialize ServicesDataService terakhir (karena bergantung pada yang lain)
     await Get.putAsync(() => ServicesDataService().init());
 
     runApp(const MyApp());
@@ -70,7 +66,6 @@ class MyApp extends StatelessWidget {
     final authProvider = Get.find<AuthProvider>();
     final authController = Get.find<AuthController>();
 
-    // Jika tidak login, langsung ke login
     if (!authProvider.isAuthenticated) {
       return ChangeNotifierProvider(
         create: (_) => ThemeService(),
@@ -78,7 +73,6 @@ class MyApp extends StatelessWidget {
       );
     }
 
-    // Jika login, tunggu role loaded dulu
     return Obx(() {
       if (!authController.isRoleLoaded.value) {
         return const MaterialApp(

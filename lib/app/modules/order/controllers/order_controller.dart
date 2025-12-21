@@ -58,7 +58,7 @@ class OrderController extends GetxController {
 
   @override
   void onClose() {
-    noteController.dispose(); // ⬅️ dispose controller
+    noteController.dispose();
     super.onClose();
   }
 
@@ -82,7 +82,9 @@ class OrderController extends GetxController {
     try {
       isLoadingAddress.value = true;
 
-      final List<AddressModel> res = await _addressProvider.getUserAddresses(userId);
+      final List<AddressModel> res = await _addressProvider.getUserAddresses(
+        userId,
+      );
 
       addresses.value = res;
 

@@ -97,3 +97,87 @@ class Button extends StatelessWidget {
     );
   }
 }
+
+/// Compact button for status updates and action buttons
+/// Uses solid color instead of gradient for dynamic coloring
+class StatusButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final Color backgroundColor;
+  final Color textColor;
+  final double borderRadius;
+  final double fontSize;
+  final EdgeInsetsGeometry? padding;
+  final IconData? icon;
+  final double iconSize;
+  final bool isOutlined;
+
+  const StatusButton({
+    required this.text,
+    required this.onPressed,
+    required this.backgroundColor,
+    this.textColor = Colors.white,
+    this.borderRadius = 8,
+    this.fontSize = 14,
+    this.padding,
+    this.icon,
+    this.iconSize = 18,
+    this.isOutlined = false,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final defaultPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 10);
+
+    if (isOutlined) {
+      return OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: backgroundColor,
+          side: BorderSide(color: backgroundColor),
+          padding: padding ?? defaultPadding,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+        ),
+        child: _buildContent(backgroundColor),
+      );
+    }
+
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor,
+        foregroundColor: textColor,
+        elevation: 0,
+        padding: padding ?? defaultPadding,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+      ),
+      child: _buildContent(textColor),
+    );
+  }
+
+  Widget _buildContent(Color color) {
+    if (icon == null) {
+      return Text(
+        text,
+        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500),
+      );
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: iconSize),
+        const SizedBox(width: 6),
+        Text(
+          text,
+          style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500),
+        ),
+      ],
+    );
+  }
+}
