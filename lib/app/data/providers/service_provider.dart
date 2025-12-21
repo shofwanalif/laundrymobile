@@ -20,7 +20,6 @@ class ServicesProvider extends GetxService {
           .map((json) => ServiceModel.fromMap(json as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      debugPrint('Error fetch services: $e');
       rethrow;
     }
   }
@@ -29,10 +28,7 @@ class ServicesProvider extends GetxService {
   Future<void> createService(ServiceModel service) async {
     try {
       await _supabase.from('services').insert(service.toMapForInsert());
-
-      debugPrint('Service created successfully: ${service.name}');
     } catch (e) {
-      debugPrint('Error create service: $e');
       rethrow;
     }
   }
@@ -44,10 +40,7 @@ class ServicesProvider extends GetxService {
           .from('services')
           .update(service.toMapForUpdate())
           .eq('id', service.id);
-
-      debugPrint('Service updated successfully');
     } catch (e) {
-      debugPrint('Error update service: $e');
       rethrow;
     }
   }
@@ -56,10 +49,7 @@ class ServicesProvider extends GetxService {
   Future<void> deleteService(String id) async {
     try {
       await _supabase.from('services').delete().eq('id', id);
-
-      debugPrint('Service deleted successfully');
     } catch (e) {
-      debugPrint('Error deleting service: $e');
       rethrow;
     }
   }
@@ -88,10 +78,8 @@ class ServicesProvider extends GetxService {
           .from('service_images')
           .getPublicUrl(path);
 
-      debugPrint('Image uploaded successfully: $publicUrl');
       return publicUrl;
     } catch (e) {
-      debugPrint('Error uploading image: $e');
       rethrow;
     }
   }
@@ -107,11 +95,9 @@ class ServicesProvider extends GetxService {
       if (bucketIndex != -1 && bucketIndex < pathSegments.length - 1) {
         final filePath = pathSegments.sublist(bucketIndex + 1).join('/');
         await _supabase.storage.from('service_images').remove([filePath]);
-        debugPrint('Image deleted: $filePath');
       }
     } catch (e) {
-      debugPrint('Error deleting image: $e');
-      // Don't rethrow - image deletion failure shouldn't break the flow
+      rethrow;
     }
   }
 }

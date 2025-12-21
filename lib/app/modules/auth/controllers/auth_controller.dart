@@ -23,11 +23,9 @@ class AuthController extends GetxController {
       try {
         final role = await _authProvider.getUserRole(user.id);
         userRole.value = role;
-        isRoleLoaded.value = true; // ← SET FLAG SETELAH LOAD
-        debugPrint('✅ User role restored: $role');
+        isRoleLoaded.value = true;
       } catch (e) {
-        debugPrint('❌ Error restoring role: $e');
-        isRoleLoaded.value = true; // Tetap set true meskipun error
+        isRoleLoaded.value = true;
       }
     } else {
       isRoleLoaded.value = true;

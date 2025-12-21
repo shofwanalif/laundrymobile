@@ -75,7 +75,7 @@ class ReportController extends GetxController
       completedOrdersCount.value = await _reportProvider
           .getCompletedOrdersCount();
     } catch (e) {
-      debugPrint('Error fetching summary: $e');
+      rethrow;
     } finally {
       isLoadingSummary.value = false;
     }
@@ -89,7 +89,7 @@ class ReportController extends GetxController
       dailyOrders.value = report['totalOrders'] as int;
       dailyWeight.value = report['totalWeight'] as double;
     } catch (e) {
-      debugPrint('Error fetching daily report: $e');
+      rethrow;
     } finally {
       isLoadingDaily.value = false;
     }
@@ -117,7 +117,7 @@ class ReportController extends GetxController
       );
       servicePopularity.value = popularity;
     } catch (e) {
-      debugPrint('Error fetching monthly report: $e');
+      rethrow;
     } finally {
       isLoadingMonthly.value = false;
     }
