@@ -44,7 +44,7 @@ class ServiceController extends GetxController {
       final result = await _serviceProvider.getServices();
       services.assignAll(result);
     } catch (e) {
-      debugPrint('Failed to fetch services: $e');
+      rethrow;
     } finally {
       isLoading.value = false;
     }
@@ -62,7 +62,7 @@ class ServiceController extends GetxController {
         selectedImage.value = File(pickedFile.path);
       }
     } catch (e) {
-      debugPrint('Error picking image from gallery: $e');
+      rethrow;
     }
   }
 
@@ -78,7 +78,7 @@ class ServiceController extends GetxController {
         selectedImage.value = File(pickedFile.path);
       }
     } catch (e) {
-      debugPrint('Error picking image from camera: $e');
+      rethrow;
     }
   }
 

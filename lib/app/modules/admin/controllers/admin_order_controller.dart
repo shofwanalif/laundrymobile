@@ -64,7 +64,7 @@ class AdminOrderController extends GetxController
 
       orders.value = result;
     } catch (e) {
-      debugPrint('Error fetching orders: $e');
+      rethrow;
     } finally {
       isLoading.value = false;
     }
@@ -90,7 +90,6 @@ class AdminOrderController extends GetxController
         );
       }
     } catch (e) {
-      debugPrint('Error updating order status: $e');
       final context = Get.context;
       if (context != null && context.mounted) {
         QuickAlert.show(
