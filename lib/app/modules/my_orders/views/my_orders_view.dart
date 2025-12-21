@@ -89,7 +89,7 @@ class MyOrdersView extends GetView<MyOrdersController> {
         ],
       ),
       child: InkWell(
-        onTap: () => {}, // Anda bisa arahkan ke halaman detail di sini
+        onTap: () => {},
         borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -232,7 +232,6 @@ class MyOrdersView extends GetView<MyOrdersController> {
 
                     const Divider(height: 24),
 
-                    // --- INFO BERAT & HARGA ---
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

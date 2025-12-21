@@ -100,7 +100,7 @@ class AdminDashboardView extends GetView<AdminController> {
                     width: cardWidth,
                     child: DashboardCard(
                       title: 'Total Pelanggan',
-                      subtitle: '${controller.totalCustomer.value} Customer',
+                      subtitle: '${controller.totalCustomer.value} Pelanggan',
                       icon: Icons.people,
                       color: const Color(0xFFE91E63),
                     ),
@@ -109,7 +109,7 @@ class AdminDashboardView extends GetView<AdminController> {
                     width: cardWidth,
                     child: DashboardCard(
                       title: 'Total Layanan',
-                      subtitle: '${controller.totalService.value} Services',
+                      subtitle: '${controller.totalService.value} Layanan',
                       icon: Icons.dashboard,
                       color: const Color(0xFFFF7043),
                     ),
@@ -150,8 +150,8 @@ class AdminDashboardView extends GetView<AdminController> {
             const SizedBox(height: 16),
 
             CardList(
-              text: "Manage Service",
-              description: "Manage all service",
+              text: "Kelola Layanan",
+              description: "Kelola semua layanan",
               icon: Icons.dashboard,
               iconColor: Colors.blue,
               onPressed: () => Get.toNamed(Routes.SERVICES_ADMIN),
@@ -160,8 +160,8 @@ class AdminDashboardView extends GetView<AdminController> {
             const SizedBox(height: 16),
 
             CardList(
-              text: "Manage Customer",
-              description: "Manage all Customer",
+              text: "Kelola Pelanggan",
+              description: "Kelola semua pelanggan",
               icon: Icons.person,
               iconColor: Colors.blue,
               onPressed: () {
@@ -172,7 +172,7 @@ class AdminDashboardView extends GetView<AdminController> {
             const SizedBox(height: 16),
 
             CardList(
-              text: "Manage Order",
+              text: "Kelola Order",
               description: "Kelola semua pesanan",
               icon: Icons.shopping_cart,
               iconColor: Colors.blue,
@@ -183,12 +183,10 @@ class AdminDashboardView extends GetView<AdminController> {
 
             CardList(
               text: "Laporan",
-              description: "Manage all Reports",
+              description: "Lihat laporan harian dan bulanan",
               icon: Icons.bar_chart,
               iconColor: Colors.blue,
-              onPressed: () {
-                Get.snackbar("Info", "Manage Notification");
-              },
+              onPressed: () => Get.toNamed(Routes.REPORTS_ADMIN),
             ),
           ],
         ),

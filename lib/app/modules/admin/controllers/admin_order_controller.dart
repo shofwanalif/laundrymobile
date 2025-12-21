@@ -143,38 +143,19 @@ class AdminOrderController extends GetxController
   Color getStatusColor(String status) {
     switch (status) {
       case OrderStatus.pending:
-        return Colors.orange;
+        return const Color(0xFFFFB74D);
       case OrderStatus.processing:
-        return Colors.blue;
+        return const Color(0xFF64B5F6);
       case OrderStatus.washing:
-        return Colors.indigo;
+        return const Color(0xFF7986CB);
       case OrderStatus.completed:
-        return Colors.green;
+        return const Color(0xFF81C784);
       case OrderStatus.pickedUp:
-        return Colors.teal;
+        return const Color(0xFF4DB6AC);
       case OrderStatus.cancelled:
-        return Colors.red;
+        return const Color(0xFFE57373);
       default:
-        return Colors.grey;
-    }
-  }
-
-  IconData getStatusIcon(String status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return Icons.pending;
-      case OrderStatus.processing:
-        return Icons.hourglass_top;
-      case OrderStatus.washing:
-        return Icons.local_laundry_service;
-      case OrderStatus.completed:
-        return Icons.check_circle;
-      case OrderStatus.pickedUp:
-        return Icons.shopping_bag;
-      case OrderStatus.cancelled:
-        return Icons.cancel;
-      default:
-        return Icons.circle;
+        return const Color(0xFFBDBDBD);
     }
   }
 }
