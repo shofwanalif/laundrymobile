@@ -45,7 +45,7 @@ class NotificationHandler {
     description: 'Notifikasi update status laundry',
     importance: Importance.max,
     playSound: true,
-    sound: RawResourceAndroidNotificationSound('laundry'), // File laundry.mp3
+    sound: RawResourceAndroidNotificationSound('blink'), 
   );
 
   Future<void> initPushNotification() async {

@@ -44,7 +44,7 @@ class OrdersHistoryController extends GetxController {
       hasError.value = false;
 
       final results = await Future.wait([
-        _orderProvider.getActiveOrders(userId!),
+        _orderProvider.getOrderHistory(userId!),
         _addressProvider.getUserAddresses(userId!),
       ]);
 

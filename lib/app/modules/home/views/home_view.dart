@@ -37,9 +37,13 @@ class HomeView extends GetView<HomeController> {
         : AppColors.background;
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, ThemeService themeService, double screenWidth) {
+  PreferredSizeWidget _buildAppBar(
+    BuildContext context,
+    ThemeService themeService,
+    double screenWidth,
+  ) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return AppBar(
       centerTitle: false,
       title: Column(
@@ -50,49 +54,66 @@ class HomeView extends GetView<HomeController> {
             style: TextStyle(
               color: isDark ? AppColors.darkTextPrimary : AppColors.textPrimary,
               fontWeight: FontWeight.bold,
-              fontSize: screenWidth * 0.05, 
+              fontSize: screenWidth * 0.05,
             ),
           ),
           Text(
             'Bersih, Wangi, Cepat',
             style: TextStyle(
-              color: (isDark ? AppColors.darkTextSecondary : AppColors.textSecondary).withValues(alpha: 0.7),
+              color:
+                  (isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.textSecondary)
+                      .withValues(alpha: 0.7),
               fontSize: screenWidth * 0.03,
             ),
           ),
         ],
       ),
-      backgroundColor: Colors.transparent, 
+      backgroundColor: Colors.transparent,
       elevation: 0,
       flexibleSpace: Container(
         decoration: BoxDecoration(
-          gradient: isDark ? null : LinearGradient(
-            colors: [AppColors.primary.withValues(alpha: 0.1), Colors.transparent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+          gradient: isDark
+              ? null
+              : LinearGradient(
+                  colors: [
+                    AppColors.primary.withValues(alpha: 0.1),
+                    Colors.transparent,
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
         ),
       ),
       actions: [
         _buildActionIcon(
-          icon: themeService.isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+          icon: themeService.isDarkMode
+              ? Icons.light_mode_rounded
+              : Icons.dark_mode_rounded,
           onPressed: () => themeService.toggleTheme(),
           context: context,
         ),
-        Obx(() => _buildActionIcon(
-          icon: controller.isLoading.value ? Icons.hourglass_empty : Icons.refresh_rounded,
-          onPressed: controller.isLoading.value ? null : controller.refreshData,
-          context: context,
-          isLoading: controller.isLoading.value,
-        )),
+        Obx(
+          () => _buildActionIcon(
+            icon: controller.isLoading.value
+                ? Icons.hourglass_empty
+                : Icons.refresh_rounded,
+            onPressed: controller.isLoading.value
+                ? null
+                : controller.refreshData,
+            context: context,
+            isLoading: controller.isLoading.value,
+          ),
+        ),
         const SizedBox(width: 8),
       ],
     );
   }
 
   Widget _buildActionIcon({
-    required IconData icon, 
-    required VoidCallback? onPressed, 
+    required IconData icon,
+    required VoidCallback? onPressed,
     required BuildContext context,
     bool isLoading = false,
     Color? iconColor,
@@ -108,13 +129,25 @@ class HomeView extends GetView<HomeController> {
             color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
-          )
+          ),
         ],
       ),
       child: IconButton(
-        icon: isLoading 
-          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-          : Icon(icon, color: iconColor ?? (isDark ? AppColors.darkTextPrimary : AppColors.textPrimary), size: 20),
+        icon: isLoading
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Icon(
+                icon,
+                color:
+                    iconColor ??
+                    (isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.textPrimary),
+                size: 20,
+              ),
         onPressed: onPressed,
       ),
     );
@@ -124,8 +157,8 @@ class HomeView extends GetView<HomeController> {
     return Drawer(
       width: screenWidth * 0.8, // Responsif: 80% dari lebar layar
       child: Container(
-        color: Theme.of(context).brightness == Brightness.dark 
-            ? AppColors.darkBackground 
+        color: Theme.of(context).brightness == Brightness.dark
+            ? AppColors.darkBackground
             : AppColors.background,
         child: Column(
           children: [
@@ -134,7 +167,12 @@ class HomeView extends GetView<HomeController> {
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
-                  _drawerItem(Icons.home_rounded, 'Beranda', () => Get.back(), AppColors.primary),
+                  _drawerItem(
+                    Icons.home_rounded,
+                    'Beranda',
+                    () => Get.back(),
+                    AppColors.primary,
+                  ),
                   _drawerItem(Icons.shopping_bag_rounded, 'Laundry Saya', () {
                     Get.back();
                     controller.goToMyOrders();
@@ -143,12 +181,11 @@ class HomeView extends GetView<HomeController> {
                     Get.back();
                     controller.goToOrderHistory();
                   }, AppColors.primary),
-                   _drawerItem(Icons.location_on, 'Alamat Saya', () {
+                  _drawerItem(Icons.location_on, 'Alamat Saya', () {
                     Get.back();
                     controller.goToAddress();
                   }, AppColors.primary),
                   const Divider(indent: 20, endIndent: 20),
-                  _drawerItem(Icons.settings_rounded, 'Pengaturan', () => Get.back(), AppColors.textSecondary),
                   _drawerItem(Icons.logout_rounded, 'Keluar', () {
                     Get.back();
                     controller.logout();
@@ -184,24 +221,47 @@ class HomeView extends GetView<HomeController> {
             child: CircleAvatar(
               radius: 30,
               backgroundColor: AppColors.white,
-              child: Icon(Icons.person_rounded, color: AppColors.primary, size: 35),
+              child: Icon(
+                Icons.person_rounded,
+                color: AppColors.primary,
+                size: 35,
+              ),
             ),
           ),
           const SizedBox(height: 15),
-          Text(
-            'Halo, Pelanggan!',
-            style: TextStyle(color: AppColors.white, fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            controller.userEmail ?? 'user@example.com',
-            style: TextStyle(color: AppColors.white.withValues(alpha: 0.8), fontSize: 14),
+          Obx(
+            () => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Halo, ${controller.userName ?? 'Pelanggan'}!',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  controller.userEmail ?? 'user@example.com',
+                  style: TextStyle(
+                    color: AppColors.white.withValues(alpha: 0.8),
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _drawerItem(IconData icon, String title, VoidCallback onTap, Color color) {
+  Widget _drawerItem(
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+    Color color,
+  ) {
     return ListTile(
       leading: Icon(icon, color: color),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
@@ -218,11 +278,13 @@ class HomeView extends GetView<HomeController> {
           children: [
             if (controller.isOfflineMode.value)
               OfflineIndicator(onRetry: controller.refreshData),
-            
+
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: isTablet ? screenWidth * 0.1 : 16, // Padding lebih lebar di tablet
+                  horizontal: isTablet
+                      ? screenWidth * 0.1
+                      : 16, // Padding lebih lebar di tablet
                 ),
                 child: _buildContent(context, screenWidth),
               ),
@@ -256,11 +318,24 @@ class HomeView extends GetView<HomeController> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Icon(Icons.cloud_off_rounded, size: screenWidth * 0.2, color: AppColors.error.withValues(alpha: 0.5)),
+            Icon(
+              Icons.cloud_off_rounded,
+              size: screenWidth * 0.2,
+              color: AppColors.error.withValues(alpha: 0.5),
+            ),
             SizedBox(height: screenWidth * 0.05),
-            Text('Koneksi Terganggu', style: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold)),
+            Text(
+              'Koneksi Terganggu',
+              style: TextStyle(
+                fontSize: screenWidth * 0.05,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 10),
-            Text(_getErrorMessage(controller.errorMessage.value), textAlign: TextAlign.center),
+            Text(
+              _getErrorMessage(controller.errorMessage.value),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 30),
             ElevatedButton.icon(
               onPressed: controller.refreshData,
@@ -268,10 +343,15 @@ class HomeView extends GetView<HomeController> {
               label: const Text('Coba Lagi'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -283,9 +363,16 @@ class HomeView extends GetView<HomeController> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.layers_clear_rounded, size: screenWidth * 0.2, color: AppColors.textTertiary),
+          Icon(
+            Icons.layers_clear_rounded,
+            size: screenWidth * 0.2,
+            color: AppColors.textTertiary,
+          ),
           const SizedBox(height: 20),
-          const Text('Belum ada layanan tersedia', style: TextStyle(fontWeight: FontWeight.w600)),
+          const Text(
+            'Belum ada layanan tersedia',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
         ],
       ),
     );
@@ -293,7 +380,8 @@ class HomeView extends GetView<HomeController> {
 
   Widget _buildLoadingWidget() {
     return const Center(
-      child: CircularProgressIndicator.adaptive(), // Mengikuti style platform (iOS/Android)
+      child:
+          CircularProgressIndicator.adaptive(), // Mengikuti style platform (iOS/Android)
     );
   }
 

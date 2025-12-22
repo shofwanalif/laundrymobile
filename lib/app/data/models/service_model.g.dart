@@ -22,13 +22,14 @@ class ServiceModelAdapter extends TypeAdapter<ServiceModel> {
       description: fields[2] as String,
       pricePerKg: fields[3] as int,
       duration: fields[4] as String,
+      imageUrl: fields[5] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ServiceModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class ServiceModelAdapter extends TypeAdapter<ServiceModel> {
       ..writeByte(3)
       ..write(obj.pricePerKg)
       ..writeByte(4)
-      ..write(obj.duration);
+      ..write(obj.duration)
+      ..writeByte(5)
+      ..write(obj.imageUrl);
   }
 
   @override

@@ -1,146 +1,162 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import * as djwt from "https://deno.land/x/djwt@v3.0.1/mod.ts"
 
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
 Deno.serve(async (req) => {
   try {
-    const body = await req.json()
-    const { record, old_record } = body
+    const body = await req.json();
+    const { record, old_record } = body;
 
-    if (!record || !old_record || record.status === old_record.status) {
-      return new Response("No status change detected", { status: 200 })
+    // --- LOGIKA VALIDASI (PENTING) ---
+    // Agar INSERT (order baru) memicu notif, kita cek jika old_record kosong
+    const isInsert = !old_record;
+    const isStatusChanged = old_record && record.status !== old_record.status;
+
+    if (!isInsert && !isStatusChanged) {
+      return new Response("No status change detected", { status: 200 });
     }
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    )
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    // Ambil data profile penerima
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('fcm_token, name')
       .eq('id', record.user_id)
-      .single()
+      .single();
 
     if (profileError || !profile?.fcm_token) {
-      return new Response("User has no FCM token", { status: 200 })
+      return new Response("User has no FCM token or profile not found", { status: 200 });
     }
 
-    // --- LOGIKA PESAN ---
-    let notificationTitle = "Update Pesanan Laundry 🧺";
-    let notificationBody = `Halo ${profile.name || 'Pelanggan'}, status pesananmu: ${record.status}`;
+    // --- AMBIL KONTEN NOTIFIKASI LAUNDRY ---
+    const { title, body: notificationBody } = getNotificationContent(record.status, profile.name);
 
-    switch (record.status) {
-      case 'pending':
-        notificationTitle = "Pesanan Diterima ✨";
-        notificationBody = "Pesananmu sudah masuk. Tunggu konfirmasi dari kami ya!";
-        break;
-      case 'processing':
-        notificationTitle = "Sedang Diproses 🧼";
-        notificationBody = "Laundry kamu sedang kami siapkan untuk masuk antrean.";
-        break;
-      case 'washing':
-        notificationTitle = "Lagi Dicuci 🌊";
-        notificationBody = "Baju-baju kamu sedang dibersihkan biar wangi merona!";
-        break;
-      case 'completed':
-        notificationTitle = "Sudah Kering Nih! ✨";
-        notificationBody = "Laundry sudah bersih dan rapi. Siap diambil atau diantar!";
-        break;
-      case 'picked_up':
-        notificationTitle = "Sudah Selesai 🏠";
-        notificationBody = "Terima kasih sudah menggunakan jasa laundry kami!";
-        break;
-      case 'cancelled':
-        notificationTitle = "Pesanan Dibatalkan ❌";
-        notificationBody = "Pesananmu telah dibatalkan. Hubungi kami jika ada kendala.";
-        break;
-    }
-
-    // --- 1. SIMPAN LOG KE DATABASE (Penting!) ---
-    // Agar saat user buka aplikasi, riwayat notifikasi tetap ada meski tadi app ditutup
+    // 1. Simpan Log ke Database
     await supabase.from('notification_logs').insert({
       user_id: record.user_id,
-      title: notificationTitle,
+      title: title,
       body: notificationBody,
       order_id: record.id,
       type: 'push'
     });
 
-    // --- 2. AUTH GOOGLE ---
-    const clientEmail = Deno.env.get('FIREBASE_CLIENT_EMAIL')!
-    const privateKeyRaw = Deno.env.get('FIREBASE_PRIVATE_KEY')!.replace(/\\n/g, '\n')
-    const projectId = Deno.env.get('FIREBASE_PROJECT_ID')!
+    // 2. Proses Kirim FCM
+    const fcmResult = await sendFCMNotification(title, notificationBody, record, profile.fcm_token);
 
-    const extractKey = (pem: string) => {
-      const pemContents = pem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g, "");
-      const binary = atob(pemContents);
-      const buffer = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) buffer[i] = binary.charCodeAt(i);
-      return buffer.buffer;
-    };
-
-    const key = await crypto.subtle.importKey(
-      "pkcs8",
-      extractKey(privateKeyRaw),
-      { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
-      false,
-      ["sign"]
-    )
-
-    const now = Math.floor(Date.now() / 1000)
-    const jwt = await djwt.create({ alg: "RS256", typ: "JWT" }, {
-      iss: clientEmail,
-      sub: clientEmail,
-      aud: "https://oauth2.googleapis.com/token",
-      iat: now,
-      exp: now + 3600,
-      scope: "https://www.googleapis.com/auth/cloud-platform",
-    }, key)
-
-    const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-        assertion: jwt,
-      }),
-    })
-    const { access_token } = await tokenRes.json()
-
-    // --- 3. KIRIM KE FCM ---
-    const fcmRes = await fetch(
-      `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${access_token}`,
-        },
-        body: JSON.stringify({
-          message: {
-            token: profile.fcm_token,
-            notification: { title: notificationTitle, body: notificationBody },
-            data: {
-              order_id: String(record.id),
-              status: record.status,
-              type: "ORDER_UPDATE"
-            },
-            android: {
-              notification: {
-                channel_id: "channel_notification",
-                click_action: "FLUTTER_NOTIFICATION_CLICK",
-                sound: "laundry.mp3"
-              }
-            }
-          },
-        }),
-      }
-    )
-
-    const result = await fcmRes.json()
-    return new Response(JSON.stringify(result), { status: 200 })
+    return new Response(JSON.stringify({ success: true, result: fcmResult }), { 
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 })
+    console.error("Error:", err.message);
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
-})
+});
+
+/**
+ * Pemetaan status ke pesan notifikasi Laundry
+ */
+function getNotificationContent(status, name) {
+  const userName = name || 'Pelanggan';
+  const messages = {
+    'pending': {
+      title: "Pesanan Diterima ✨",
+      body: `Halo ${userName}, pesananmu sudah masuk. Tunggu konfirmasi kami ya!`
+    },
+    'processing': {
+      title: "Sedang Diproses 🧼",
+      body: "Laundry kamu sedang kami siapkan untuk masuk antrean."
+    },
+    'washing': {
+      title: "Lagi Dicuci 🌊",
+      body: "Baju-baju kamu sedang dibersihkan biar wangi merona!"
+    },
+    'completed': {
+      title: "Sudah Kering Nih! ✨",
+      body: "Laundry sudah bersih dan rapi. Siap diambil atau diantar!"
+    },
+    'picked_up': {
+      title: "Sudah Selesai 🏠",
+      body: "Terima kasih sudah menggunakan jasa laundry kami!"
+    },
+    'cancelled': {
+      title: "Pesanan Dibatalkan ❌",
+      body: "Pesananmu telah dibatalkan. Hubungi kami jika ada kendala."
+    }
+  };
+
+  return messages[status] || {
+    title: "Update Pesanan Laundry 🧺",
+    body: `Status pesananmu saat ini: ${status}`
+  };
+}
+
+/**
+ * Logika Auth Google & Pengiriman FCM v1
+ */
+async function sendFCMNotification(title, body, record, fcmToken) {
+  const clientEmail = Deno.env.get('FIREBASE_CLIENT_EMAIL')!;
+  const privateKeyRaw = Deno.env.get('FIREBASE_PRIVATE_KEY')!.replace(/\\n/g, '\n');
+  const projectId = Deno.env.get('FIREBASE_PROJECT_ID')!;
+
+  const pemContents = privateKeyRaw.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g, "");
+  const binary = atob(pemContents);
+  const buffer = new Uint8Array(binary.length).map((_, i) => binary.charCodeAt(i)).buffer;
+
+  const key = await crypto.subtle.importKey(
+    "pkcs8", buffer, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]
+  );
+
+  const now = Math.floor(Date.now() / 1000);
+  const jwt = await djwt.create({ alg: "RS256", typ: "JWT" }, {
+    iss: clientEmail,
+    sub: clientEmail,
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600,
+    scope: "https://www.googleapis.com/auth/cloud-platform",
+  }, key);
+
+  const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: jwt,
+    }),
+  });
+  
+  const { access_token } = await tokenRes.json();
+
+  const fcmRes = await fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`,
+    },
+    body: JSON.stringify({
+      message: {
+        token: fcmToken,
+        notification: { title, body },
+        data: {
+          order_id: String(record.id),
+          status: record.status,
+          type: "ORDER_UPDATE"
+        },
+        android: {
+          notification: {
+            channel_id: "channel_notification",
+            click_action: "FLUTTER_NOTIFICATION_CLICK",
+            sound: "blink.mp3"
+          }
+        }
+      },
+    }),
+  });
+
+  return await fcmRes.json();
+}

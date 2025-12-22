@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'notification_log_model.g.dart';
 
-@HiveType(typeId: 2)
+@HiveType(typeId: 4)
 class NotificationLogModel extends HiveObject {
   @HiveField(0)
   late String title;
